@@ -23,3 +23,20 @@
 	<iostream>
 	"../algebra3/algebra3.h"
 
+1489842792 source:d:\advanced-computer-graphics\algebra3\algebra3.cpp
+	<math.h>
+	"algebra3.h"
+	<ctype.h>
+
+1489842792 d:\advanced-computer-graphics\algebra3\algebra3.h
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+
+1489849519 source:d:\advanced-computer-graphics\raytracing\main.cpp
+	<iostream>
+	<fstream>
+	<vector>
+	<typeinfo>
+	"../algebra3/algebra3.h"
+
