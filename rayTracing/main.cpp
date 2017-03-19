@@ -106,6 +106,8 @@ public :
     Sphere(float oX, float oY, float oZ, float radius)
     {
         center.set(oX, oY, oZ);
+        center.printCoor();
+        cout << radius;
         this->radius = radius;
         this->isHit = false;
     }
@@ -116,16 +118,18 @@ public :
     }
     bool intersect(Ray ray, float &t0, float &t1)
     {
-
         vec3 ori = ray.getOri() - this->center;
         vec3 dir = ray.getDir();
         vec3 A = prod(dir, dir);                    // A = D * D
         vec3 B = 2 * prod(ori, dir);                // B = 2 * S * D
-        vec3 C = prod(ori, ori) - radius * radius;  // C = S * S - R * R
+        vec3 C = prod(ori, ori) - (radius * radius);  // C = S * S - R * R
         vec3 discriminant  = prod(B, B) - 4 * prod(A, C);
-        discriminant.printCoor();
+        if(discriminant >= 0){
+            return true;
+        }else{
+            return false;
+        }
 
-        return true;
     }
 };
 class Triangle
@@ -174,7 +178,6 @@ vector<string> split(string str, string pattern)
 
 int main()
 {
-    cout << M_PI;
     ifstream file( "hw1_input.txt");
     string pattern = " ";
     string line;
@@ -216,24 +219,25 @@ int main()
         }
         else if(info[0] == "S")
         {
-            float oX = atoi(info[1].c_str());
-            float oY = atoi(info[2].c_str());
-            float oZ = atoi(info[3].c_str());
-            float radius = atoi(info[4].c_str());
+
+            float oX = atof(info[1].c_str());
+            float oY = atof(info[2].c_str());
+            float oZ = atof(info[3].c_str());
+            float radius = atof(info[4].c_str());
             Sphere s(oX, oY, oZ, radius);
             Spheres_vector.push_back(s);
         }
         else if(info[0] == "T")
         {
-            float x1 = atoi(info[1].c_str());
-            float y1 = atoi(info[2].c_str());
-            float z1 = atoi(info[3].c_str());
-            float x2 = atoi(info[4].c_str());
-            float y2 = atoi(info[5].c_str());
-            float z2 = atoi(info[6].c_str());
-            float x3 = atoi(info[7].c_str());
-            float y3 = atoi(info[8].c_str());
-            float z3 = atoi(info[9].c_str());
+            float x1 = atof(info[1].c_str());
+            float y1 = atof(info[2].c_str());
+            float z1 = atof(info[3].c_str());
+            float x2 = atof(info[4].c_str());
+            float y2 = atof(info[5].c_str());
+            float z2 = atof(info[6].c_str());
+            float x3 = atof(info[7].c_str());
+            float y3 = atof(info[8].c_str());
+            float z3 = atof(info[9].c_str());
             Triangle t(x1, y1, z1, x2, y2, z2, x3, y3, z3);
             Triangles_vector.push_back(t);
         }
