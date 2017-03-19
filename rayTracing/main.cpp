@@ -7,8 +7,6 @@
 
 using namespace std;
 
-
-
 struct Pixel {
 	unsigned char R, G, B;  // Blue, Green, Red
 };
@@ -97,6 +95,7 @@ public:
         return direction;
     }
 };
+
 class Sphere
 {
 private:
@@ -117,16 +116,14 @@ public :
     }
     bool intersect(Ray ray, float &t0, float &t1)
     {
-        vec3 ori = ray.getOri();
+
+        vec3 ori = ray.getOri() - this->center;
         vec3 dir = ray.getDir();
-        vec3 l = this->center - ori;
-        float tca = l * ori;
-        if (tca < 0) return false;
-        float d2 = l * l - tca * tca;
-        if (d2 > this->radius) return false;
-        float thc = sqrt(radius - d2);
-        t0 = tca - thc;
-        t1 = tca + thc;
+        vec3 A = prod(dir, dir);                    // A = D * D
+        vec3 B = 2 * prod(ori, dir);                // B = 2 * S * D
+        vec3 C = prod(ori, ori) - radius * radius;  // C = S * S - R * R
+        vec3 discriminant  = prod(B, B) - 4 * prod(A, C);
+        discriminant.printCoor();
 
         return true;
     }
@@ -144,8 +141,8 @@ public:
              float x3, float y3, float z3)
     {
         position.set(x1, y1, z1);
-        s1.set(x2, y2, z2);
-        s2.set(x3, y3, z3);
+        s1.set(x2 - x1, y2 - y1, z2 - z1);
+        s2.set(x3 - x1, y3 - y1, z3 - z1);
         this->isHit = false;
     }
     bool intersect()
@@ -177,6 +174,7 @@ vector<string> split(string str, string pattern)
 
 int main()
 {
+    cout << M_PI;
     ifstream file( "hw1_input.txt");
     string pattern = " ";
     string line;
@@ -185,6 +183,7 @@ int main()
     vec3 View_Direction;
     float FieldOfView;
     int width, height;
+    int distance = 1;
     vector<Sphere> Spheres_vector;
     vector<Triangle> Triangles_vector;
 
@@ -244,30 +243,37 @@ int main()
         }
     }
 
-    vec3 screen [width][height];
-    float invWidth = 1 / float(width), invHeight = 1 / float(height);
-    float fov = FieldOfView, aspectratio = width / float(height);
-    float angle = tan(M_PI * 0.5 * fov / 180.);
+    vec3 lookAtPoint = Eye + distance * View_Direction;
+    vec3 up (0, 1, 0);
+    vec3 U = View_Direction ^ up;
+    vec3 V = U ^ View_Direction;
 
-    int pixel [width][height];
-    for(int x = 0; x < width; x++)
+    int screen [width][height];
+    float halfWidth = float(width) / 2;
+    float halfHeight = float(height) / 2;
+    float aspectRatio = width / float(height);
+    float viewPlaneHalfWidth = tan(M_PI * 0.5 * FieldOfView / 180.);
+    float viewPlaneHalfHeight = aspectRatio * viewPlaneHalfWidth;
+    vec3 viewPlaneTopLeftPoint = lookAtPoint - prod(V, viewPlaneHalfHeight) + prod(U, viewPlaneHalfWidth);
+    vec3 xIncVector = (U * 2 * halfWidth) / width;
+    vec3 yIncVector = (V * 2 * halfHeight) / height;
+    for(int i = 0; i < width; i++)
     {
-        for(int y = 0; y < height; y++)
+        for(int j = 0; j < height; j++)
         {
-            float _x = (2 * ((_x + 0.5) * invWidth) - 1) * angle * aspectratio;
-            float _y = (1 - 2 * ((_y + 0.5) * invHeight)) * angle;
-            vec3 raydir = vec3(_x, _y, 0) + View_Direction;
-            raydir.normalize();
-            Ray ray(Eye, raydir);
+            vec3 viewPlanePoint = viewPlaneTopLeftPoint + i*xIncVector + j*yIncVector;
+            vec3 castRay = viewPlanePoint - Eye;
+            Ray ray(Eye,castRay);
             float t0, t1;
             for (int sp_idx = 0;  sp_idx < Spheres_vector.size() ; sp_idx++)
             {
-                pixel[x][y] = (Spheres_vector[sp_idx].intersect(ray, t0, t1))? 0:255;
+                screen[i][j] = (Spheres_vector[sp_idx].intersect(ray, t0, t1))? 255:0;
             }
+            /**
             for (int tri_idx = 0;  tri_idx < Triangles_vector.size() ; tri_idx++)
             {
                 //pixel[x][y] = (Triangles_vector[tri_idx].intersect())? 255:0;
-            }
+            }**/
         }
     }
     ColorImage image;
@@ -277,7 +283,7 @@ int main()
 	image.init(width, height);
 	for (y=0; y<height; y++) {
 		for (x=0; x<width; x++) {
-			p.R = pixel[x][y];
+			p.R = screen[x][y];
 			image.writePixel(x, y, p);
 		}
 	}

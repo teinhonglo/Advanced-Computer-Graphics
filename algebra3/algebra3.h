@@ -235,6 +235,7 @@ friend vec3 operator / (const vec3& a, const float d);	    // v1 / 3.0
 friend vec3 operator ^ (const vec3& a, const vec3& b);	    // cross product
 friend int operator == (const vec3& a, const vec3& b);	    // v1 == v2 ?
 friend int operator != (const vec3& a, const vec3& b);	    // v1 != v2 ?
+friend bool operator >= (const vec3& a, const float d);	    // v1 / 3.0
 //friend ostream& operator << (ostream& s, vec3& v);	    // output to stream
 //friend istream& operator >> (istream& s, vec3& v);	    // input from strm.
 friend void swap(vec3& a, vec3& b);			    // swap v1 & v2

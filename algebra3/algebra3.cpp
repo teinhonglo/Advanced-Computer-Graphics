@@ -364,6 +364,11 @@ int operator == (const vec3& a, const vec3& b)
 int operator != (const vec3& a, const vec3& b)
 { return !(a == b); }
 
+
+bool operator >= (const vec3& a, const float b)
+{ return (a.n[VX] >= b) && (a.n[VY] >= b) && (a.n[VZ] >= b);
+}
+
 /*ostream& operator << (ostream& s, vec3& v)
 { return s << "| " << v.n[VX] << ' ' << v.n[VY] << ' ' << v.n[VZ] << " |"; }
 
