@@ -7,73 +7,75 @@
 
 using namespace std;
 
-struct Pixel {
-	unsigned char R, G, B;  // Blue, Green, Red
+struct Pixel
+{
+    unsigned char R, G, B;  // Blue, Green, Red
 };
 
-class ColorImage {
-	Pixel *pPixel;
-	int xRes, yRes;
+class ColorImage
+{
+    Pixel *pPixel;
+    int xRes, yRes;
 public:
-	ColorImage();
-	~ColorImage();
-	void init(int xSize, int ySize);
-	void clear(Pixel background);
-	Pixel readPixel(int x, int y);
-	void writePixel(int x, int y, Pixel p);
-	void outputPPM(char *filename);
+    ColorImage();
+    ~ColorImage();
+    void init(int xSize, int ySize);
+    void clear(Pixel background);
+    Pixel readPixel(int x, int y);
+    void writePixel(int x, int y, Pixel p);
+    void outputPPM(char *filename);
 };
 
 ColorImage::ColorImage()
 {
-	pPixel = 0;
+    pPixel = 0;
 }
 
 ColorImage::~ColorImage()
 {
-	if (pPixel) delete[] pPixel;
-	pPixel = 0;
+    if (pPixel) delete[] pPixel;
+    pPixel = 0;
 }
 
 void ColorImage::init(int xSize, int ySize)
 {
-	Pixel p = {0,0,0};
-	xRes = xSize;
-	yRes = ySize;
-	pPixel = new Pixel[xSize*ySize];
-	clear(p);
+    Pixel p = {0,0,0};
+    xRes = xSize;
+    yRes = ySize;
+    pPixel = new Pixel[xSize*ySize];
+    clear(p);
 }
 
 void ColorImage::clear(Pixel background)
 {
-	int i;
+    int i;
 
-	if (! pPixel) return;
-	for (i=0; i<xRes*yRes; i++) pPixel[i] = background;
+    if (! pPixel) return;
+    for (i=0; i<xRes*yRes; i++) pPixel[i] = background;
 }
 
 Pixel ColorImage::readPixel(int x, int y)
 {
-	assert(pPixel); // die if image not initialized
-	return pPixel[x + y*yRes];
+    assert(pPixel); // die if image not initialized
+    return pPixel[x + y*yRes];
 }
 
 void ColorImage::writePixel(int x, int y, Pixel p)
 {
-	assert(pPixel); // die if image not initialized
-	pPixel[x + y*yRes] = p;
+    assert(pPixel); // die if image not initialized
+    pPixel[x + y*yRes] = p;
 }
 
 void ColorImage::outputPPM(char *filename)
 {
     FILE *outFile = fopen(filename, "wb");
 
-	assert(outFile); // die if file can't be opened
+    assert(outFile); // die if file can't be opened
 
-	fprintf(outFile, "P6 %d %d 255\n", xRes, yRes);
-	fwrite(pPixel, 1, 3*xRes*yRes, outFile );
+    fprintf(outFile, "P6 %d %d 255\n", xRes, yRes);
+    fwrite(pPixel, 1, 3*xRes*yRes, outFile );
 
-	fclose(outFile);
+    fclose(outFile);
 }
 
 class Ray
@@ -88,10 +90,12 @@ public:
         origin = ori;
         direction = dir;
     }
-    vec3 getOri(){
+    vec3 getOri()
+    {
         return origin;
     }
-    vec3 getDir(){
+    vec3 getDir()
+    {
         return direction;
     }
 };
@@ -124,10 +128,11 @@ public :
         vec3 B = 2 * prod(ori, dir);                // B = 2 * S * D
         vec3 C = prod(ori, ori) - (radius * radius);  // C = S * S - R * R
         vec3 discriminant  = prod(B, B) - 4 * prod(A, C);
-        if(discriminant >= 0){
+        if(discriminant >= 0)
+        {
             return true;
         }else{
-            return false;
+            false;
         }
 
     }
@@ -273,26 +278,28 @@ int main()
             {
                 screen[i][j] = (Spheres_vector[sp_idx].intersect(ray, t0, t1))? 255:0;
             }
-            /**
+
             for (int tri_idx = 0;  tri_idx < Triangles_vector.size() ; tri_idx++)
             {
                 //pixel[x][y] = (Triangles_vector[tri_idx].intersect())? 255:0;
-            }**/
+            }
         }
     }
     ColorImage image;
     int x, y;
-	Pixel p={0,0,0};
+    Pixel p= {0,0,0};
 
-	image.init(width, height);
-	for (y=0; y<height; y++) {
-		for (x=0; x<width; x++) {
-			p.R = screen[x][y];
-			image.writePixel(x, y, p);
-		}
-	}
+    image.init(width, height);
+    for (y=0; y<height; y++)
+    {
+        for (x=0; x<width; x++)
+        {
+            p.R = screen[x][y];
+            image.writePixel(x, y, p);
+        }
+    }
 
-	image.outputPPM("reds.ppm");
+    image.outputPPM("reds.ppm");
 
     /**
     For every pixel
