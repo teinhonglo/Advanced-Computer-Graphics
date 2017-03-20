@@ -220,6 +220,9 @@ vec3& apply(V_FCT_PTR fct);		    // apply a func. to each component
 void  set( float x, float y, float z );     // set vector
 void  print( FILE *file, char *name );      // print vector to a file
 void printCoor();       // print matrix to a file
+float getX();
+float getY();
+float getZ();
 
 // friends
 

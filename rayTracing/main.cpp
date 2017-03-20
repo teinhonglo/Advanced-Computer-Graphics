@@ -98,6 +98,9 @@ public:
     {
         return direction;
     }
+    vec3 getPoint(float t){
+        return this->origin + (t * this->direction);
+    }
 };
 
 class Sphere
@@ -122,27 +125,26 @@ public :
     }
     bool intersect(Ray ray, float &t0, float &t1)
     {
-        vec3 ori = ray.getOri() - this->center;
+        vec3 ori = ray.getOri();
         vec3 dir = ray.getDir();
-        vec3 A = prod(dir, dir);                    // A = D * D
-        vec3 B = 2 * prod(ori, dir);                // B = 2 * S * D
-        vec3 C = prod(ori, ori) - (radius * radius);  // C = S * S - R * R
-        vec3 discriminant  = prod(B, B) - 4 * prod(A, C);
-        if(discriminant >= 0)
-        {
+        float t = (this->center * dir - ori * dir ) / (dir * dir);
+        vec3 nearest_point = ray.getPoint(t);
+        float distance = (nearest_point - this->center).length();
+        if(distance <= this->radius){
             return true;
         }else{
-            false;
+            return false;
         }
-
     }
 };
 class Triangle
 {
 private:
     vec3 position;
-    vec3 s1;
-    vec3 s2;
+    vec3 v1;
+    vec3 v2;
+    float s1 = INFINITY;
+    float s2 = INFINITY;
     bool isHit;
 public:
     Triangle(float x1, float y1, float z1,
@@ -150,13 +152,28 @@ public:
              float x3, float y3, float z3)
     {
         position.set(x1, y1, z1);
-        s1.set(x2 - x1, y2 - y1, z2 - z1);
-        s2.set(x3 - x1, y3 - y1, z3 - z1);
+        v1.set(x2 - x1, y2 - y1, z2 - z1);
+        v2.set(x3 - x1, y3 - y1, z3 - z1);
         this->isHit = false;
     }
-    bool intersect()
+    bool intersect(Ray ray, float &t0, float &t1)
     {
-        return isHit;
+        vec3 ori = ray.getOri();
+        vec3 dir = ray.getDir();
+        vec3 v1 = this->position;
+        vec3 v2 = this->v1;
+        vec3 v3 = this->v2;
+        mat3 left_coefficient = mat3(v2, v3, -1 * dir);
+        vec3 right_vec = (ori - v1);
+        vec3 answer = left_coefficient.transpose() * right_vec;
+        float s1 = answer.getX();
+        float s2 = answer.getY();
+        float t = answer.getZ();
+        if ((s1 + s2) <= 1 && t > 0){
+            return true;
+        }else{
+            return false;
+        }
     }
 };
 
@@ -251,21 +268,24 @@ int main()
             cout << "not mapping";
         }
     }
-
+    float halfWidth = float(width) / 2;
+    float halfHeight = float(height) / 2;
+    distance = halfWidth / tan(M_PI * 0.5 * FieldOfView / 180.);
     vec3 lookAtPoint = Eye + distance * View_Direction;
     vec3 up (0, 1, 0);
     vec3 U = View_Direction ^ up;
+    U = U.normalize();
     vec3 V = U ^ View_Direction;
+    V = V.normalize();
 
     int screen [width][height];
-    float halfWidth = float(width) / 2;
-    float halfHeight = float(height) / 2;
     float aspectRatio = width / float(height);
     float viewPlaneHalfWidth = tan(M_PI * 0.5 * FieldOfView / 180.);
     float viewPlaneHalfHeight = aspectRatio * viewPlaneHalfWidth;
-    vec3 viewPlaneTopLeftPoint = lookAtPoint - prod(V, viewPlaneHalfHeight) + prod(U, viewPlaneHalfWidth);
-    vec3 xIncVector = (U * 2 * halfWidth) / width;
-    vec3 yIncVector = (V * 2 * halfHeight) / height;
+    //vec3 viewPlaneTopLeftPoint = lookAtPoint - halfHeight * prod(V, viewPlaneHalfHeight) + halfWidth * prod(U, viewPlaneHalfWidth);
+    vec3 viewPlaneTopLeftPoint = lookAtPoint + halfHeight * V + halfWidth * U;
+    vec3 xIncVector = -(U * 2 * halfWidth) / width;
+    vec3 yIncVector = -(V * 2 * halfHeight) / height;
     for(int i = 0; i < width; i++)
     {
         for(int j = 0; j < height; j++)
@@ -279,9 +299,9 @@ int main()
                 screen[i][j] = (Spheres_vector[sp_idx].intersect(ray, t0, t1))? 255:0;
             }
 
-            for (int tri_idx = 0;  tri_idx < Triangles_vector.size() ; tri_idx++)
+            for (int tri_idx = 1;  tri_idx < Triangles_vector.size() ; tri_idx++)
             {
-                //pixel[x][y] = (Triangles_vector[tri_idx].intersect())? 255:0;
+                screen[i][j] = (Triangles_vector[tri_idx].intersect(ray, t0, t1))? 255:screen[i][j];
             }
         }
     }

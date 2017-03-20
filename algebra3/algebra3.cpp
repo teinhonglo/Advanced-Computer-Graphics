@@ -321,6 +321,21 @@ void vec3::printCoor() // print matrix to a file
   printf("<x:%f, y:%f, z:%f>\n", n[VX], n[VY], n[VZ] );
 }
 
+float vec3::getX() // print matrix to a file
+{
+  return n[VX];
+}
+
+float vec3::getY() // print matrix to a file
+{
+  return n[VY];
+}
+
+float vec3::getZ() // print matrix to a file
+{
+  return n[VZ];
+}
+
 // FRIENDS
 
 vec3 operator - (const vec3& a)
@@ -350,6 +365,8 @@ float operator * (const vec3& a, const vec3& b)
 vec3 operator / (const vec3& a, const float d)
 { float d_inv = 1./d; return vec3(a.n[VX]*d_inv, a.n[VY]*d_inv,
   a.n[VZ]*d_inv); }
+
+
 
 vec3 operator ^ (const vec3& a, const vec3& b) {
     return vec3(a.n[VY]*b.n[VZ] - a.n[VZ]*b.n[VY],
@@ -408,6 +425,8 @@ vec3 max(const vec3& a, const vec3& b)
 
 vec3 prod(const vec3& a, const vec3& b)
 { return vec3(a.n[VX] * b.n[VX], a.n[VY] * b.n[VY], a.n[VZ] * b.n[VZ]); }
+
+
 
 /****************************************************************
 *								*

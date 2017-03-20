@@ -41,3 +41,21 @@
 	"../algebra3/algebra3.h"
 	<assert.h>
 
+1490016412 source:e:\lou\advanced-computer-graphics\algebra3\algebra3.cpp
+	<math.h>
+	"algebra3.h"
+	<ctype.h>
+
+1490016453 e:\lou\advanced-computer-graphics\algebra3\algebra3.h
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+
+1490018340 source:e:\lou\advanced-computer-graphics\raytracing\main.cpp
+	<iostream>
+	<fstream>
+	<vector>
+	<typeinfo>
+	"../algebra3/algebra3.h"
+	<assert.h>
+
