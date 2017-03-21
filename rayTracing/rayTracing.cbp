@@ -32,7 +32,17 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Ray.cpp" />
+		<Unit filename="Ray.h" />
+		<Unit filename="Sphere.cpp" />
+		<Unit filename="Sphere.h" />
+		<Unit filename="Triangle.cpp" />
+		<Unit filename="Triangle.h" />
+		<Unit filename="algebra3/algebra3.cpp" />
+		<Unit filename="algebra3/algebra3.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="output.cpp" />
+		<Unit filename="output.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
