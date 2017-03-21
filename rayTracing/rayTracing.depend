@@ -1,18 +1,58 @@
 # depslib dependency file v1.0
-1490077245 source:e:\lou\advanced-computer-graphics\raytracing\main.cpp
+1490104881 source:d:\advanced-computer-graphics\raytracing\main.cpp
 	<iostream>
 	<fstream>
 	<vector>
 	<typeinfo>
-	"../algebra3/algebra3.h"
-	<assert.h>
+	"algebra3/algebra3.h"
+	"Ray.h"
+	"Sphere.h"
+	"output.h"
+	"Triangle.h"
+	<string.h>
 
-1490016412 source:e:\lou\advanced-computer-graphics\algebra3\algebra3.cpp
+1490103966 d:\advanced-computer-graphics\algebra3\algebra3.h
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+
+1490104970 d:\advanced-computer-graphics\raytracing\ray.h
+	<iostream>
+	"algebra3/algebra3.h"
+
+1490104964 d:\advanced-computer-graphics\raytracing\sphere.h
+	<iostream>
+	"algebra3/algebra3.h"
+	"Ray.h"
+
+1490100787 d:\advanced-computer-graphics\raytracing\output.h
+	<iostream>
+	<assert.h>
+	<fstream>
+
+1490104984 d:\advanced-computer-graphics\raytracing\triangle.h
+	<iostream>
+	"algebra3/algebra3.h"
+	"Ray.h"
+
+1490100146 source:d:\advanced-computer-graphics\raytracing\output.cpp
+	"output.h"
+
+1490098961 source:d:\advanced-computer-graphics\raytracing\ray.cpp
+	"Ray.h"
+
+1490100835 source:d:\advanced-computer-graphics\raytracing\sphere.cpp
+	"Sphere.h"
+
+1490101293 source:d:\advanced-computer-graphics\raytracing\triangle.cpp
+	"Triangle.h"
+
+1490023917 source:d:\advanced-computer-graphics\raytracing\algebra3\algebra3.cpp
 	<math.h>
 	"algebra3.h"
 	<ctype.h>
 
-1490016453 e:\lou\advanced-computer-graphics\algebra3\algebra3.h
+1490023917 d:\advanced-computer-graphics\raytracing\algebra3\algebra3.h
 	<math.h>
 	<stdio.h>
 	<stdlib.h>

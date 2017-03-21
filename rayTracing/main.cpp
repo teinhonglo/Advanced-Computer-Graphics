@@ -2,193 +2,15 @@
 #include <fstream>
 #include <vector>
 #include <typeinfo>
-#include "../algebra3/algebra3.h"
-#include <assert.h>
+#include "algebra3/algebra3.h"
+#include "Ray.h"
+#include "Sphere.h"
+#include "output.h"
+#include "Triangle.h"
 #include <string.h>
 
 
 using namespace std;
-
-struct Pixel
-{
-    unsigned char R, G, B;  // Blue, Green, Red
-};
-
-class ColorImage
-{
-    Pixel *pPixel;
-    int xRes, yRes;
-public:
-    ColorImage();
-    ~ColorImage();
-    void init(int xSize, int ySize);
-    void clear(Pixel background);
-    Pixel readPixel(int x, int y);
-    void writePixel(int x, int y, Pixel p);
-    void outputPPM(char *filename);
-};
-
-ColorImage::ColorImage()
-{
-    pPixel = 0;
-}
-
-ColorImage::~ColorImage()
-{
-    if (pPixel) delete[] pPixel;
-    pPixel = 0;
-}
-
-void ColorImage::init(int xSize, int ySize)
-{
-    Pixel p = {0,0,0};
-    xRes = xSize;
-    yRes = ySize;
-    pPixel = new Pixel[xSize*ySize];
-    clear(p);
-}
-
-void ColorImage::clear(Pixel background)
-{
-    int i;
-
-    if (! pPixel) return;
-    for (i=0; i<xRes*yRes; i++) pPixel[i] = background;
-}
-
-Pixel ColorImage::readPixel(int x, int y)
-{
-    assert(pPixel); // die if image not initialized
-    return pPixel[x + y*yRes];
-}
-
-void ColorImage::writePixel(int x, int y, Pixel p)
-{
-    assert(pPixel); // die if image not initialized
-    pPixel[x + y*yRes] = p;
-}
-
-void ColorImage::outputPPM(char *filename)
-{
-    FILE *outFile = fopen(filename, "wb");
-
-    assert(outFile); // die if file can't be opened
-
-    fprintf(outFile, "P6 %d %d 255\n", xRes, yRes);
-    fwrite(pPixel, 1, 3*xRes*yRes, outFile );
-
-    fclose(outFile);
-}
-
-class Ray
-{
-private:
-    vec3 origin;
-    vec3 direction;
-    float t = INFINITY;
-public:
-    Ray(vec3 ori, vec3 dir)
-    {
-        origin = ori;
-        direction = dir;
-    }
-    vec3 getOri()
-    {
-        return origin;
-    }
-    vec3 getDir()
-    {
-        return direction;
-    }
-    vec3 getPoint(float t){
-        return this->origin + (t * this->direction);
-    }
-};
-
-class Sphere
-{
-private:
-    vec3 center;
-    float radius;
-    bool isHit;
-public :
-    Sphere(float oX, float oY, float oZ, float radius)
-    {
-        center.set(oX, oY, oZ);
-        center.printCoor();
-        cout << radius;
-        this->radius = radius;
-        this->isHit = false;
-    }
-
-    void setCenter(float oX, float oY, float oZ)
-    {
-        this->center.set(oX, oY, oZ);
-    }
-    bool intersect(Ray ray, float &t0, float &t1)
-    {
-        vec3 ori = ray.getOri();
-        vec3 dir = ray.getDir();
-        float t = (this->center * dir - ori * dir ) / (dir * dir);
-        vec3 nearest_point = ray.getPoint(t);
-        float distance = (nearest_point - this->center).length();
-        if(distance <= this->radius){
-            return true;
-        }else{
-            return false;
-        }
-    }
-};
-class Triangle
-{
-private:
-    vec3 position;
-    vec3 v1;
-    vec3 v2;
-    float s1 = INFINITY;
-    float s2 = INFINITY;
-    bool isHit;
-public:
-    Triangle(float x1, float y1, float z1,
-             float x2, float y2, float z2,
-             float x3, float y3, float z3)
-    {
-        position.set(x1, y1, z1);
-        v1.set(x2, y2, z2);
-        v2.set(x3, y3, z3);
-        this->isHit = false;
-    }
-    bool intersect(Ray ray, float &t0, float &t1)
-    {
-        // base parameter
-        vec3 ori = ray.getOri();
-        vec3 dir = ray.getDir();
-        vec3 pos = this->position;
-        vec3 v1 = this->v1 - pos;
-        vec3 v2 = this->v2 - pos;
-
-        // compute t, u, v with Cramer's Rule
-        vec3 T = ori  - pos;
-        vec3 P = dir ^ v2;
-        float det = P * v1;
-
-        // scale u
-        float u = P * T / det;
-        if(u < 0 || u > 1) return false;
-
-        // scale v
-        vec3 Q = T ^ v1;
-        float v = Q * dir / det;
-        if(v < 0 || (u + v) > 1) return false;
-
-        // ray direction
-        float t  = Q * v2 / det;
-
-        return true;
-
-    }
-};
-
 
 vector<string> split(char str [], char * pattern)
 {
@@ -302,6 +124,7 @@ int main()
     vec3 viewPlaneTopLeftPoint = lookAtPoint + halfHeight * V + halfWidth * U;
     vec3 xIncVector = -(U * 2 * halfWidth) / width;
     vec3 yIncVector = -(V * 2 * halfHeight) / height;
+
     for(int i = 0; i < width; i++)
     {
         for(int j = 0; j < height; j++)
@@ -334,10 +157,6 @@ int main()
             image.writePixel(x, y, p);
         }
     }
-
     image.outputPPM("reds.ppm");
-
-
-
     return 0;
 }
