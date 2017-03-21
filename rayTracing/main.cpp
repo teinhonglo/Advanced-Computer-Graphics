@@ -2,8 +2,10 @@
 #include <fstream>
 #include <vector>
 #include <typeinfo>
-#include"../algebra3/algebra3.h"
+#include "../algebra3/algebra3.h"
 #include <assert.h>
+#include <string.h>
+
 
 using namespace std;
 
@@ -152,48 +154,51 @@ public:
              float x3, float y3, float z3)
     {
         position.set(x1, y1, z1);
-        v1.set(x2 - x1, y2 - y1, z2 - z1);
-        v2.set(x3 - x1, y3 - y1, z3 - z1);
+        v1.set(x2, y2, z2);
+        v2.set(x3, y3, z3);
         this->isHit = false;
     }
     bool intersect(Ray ray, float &t0, float &t1)
     {
+        // base parameter
         vec3 ori = ray.getOri();
         vec3 dir = ray.getDir();
-        vec3 v1 = this->position;
-        vec3 v2 = this->v1;
-        vec3 v3 = this->v2;
-        mat3 left_coefficient = mat3(v2, v3, -1 * dir);
-        vec3 right_vec = (ori - v1);
-        vec3 answer = left_coefficient.transpose() * right_vec;
-        float s1 = answer.getX();
-        float s2 = answer.getY();
-        float t = answer.getZ();
-        if ((s1 + s2) <= 1 && t > 0){
-            return true;
-        }else{
-            return false;
-        }
+        vec3 pos = this->position;
+        vec3 v1 = this->v1 - pos;
+        vec3 v2 = this->v2 - pos;
+
+        // compute t, u, v with Cramer's Rule
+        vec3 T = ori  - pos;
+        vec3 P = dir ^ v2;
+        float det = P * v1;
+
+        // scale u
+        float u = P * T / det;
+        if(u < 0 || u > 1) return false;
+
+        // scale v
+        vec3 Q = T ^ v1;
+        float v = Q * dir / det;
+        if(v < 0 || (u + v) > 1) return false;
+
+        // ray direction
+        float t  = Q * v2 / det;
+
+        return true;
+
     }
 };
 
 
-vector<string> split(string str, string pattern)
+vector<string> split(char str [], char * pattern)
 {
-    std::string::size_type pos;
-    std::vector<std::string> result;
-    str+=pattern;
-    int size=str.size();
 
-    for(int i=0; i<size; i++)
-    {
-        pos=str.find(pattern,i);
-        if(pos<size)
-        {
-            std::string s=str.substr(i,pos-i);
-            result.push_back(s);
-            i=pos+pattern.size()-1;
-        }
+    std::vector<std::string> result;
+    char *p;
+    p = strtok(str,pattern);
+    while(p){
+        result.push_back(p);
+        p=strtok(NULL,pattern);
     }
     return result;
 }
@@ -201,7 +206,7 @@ vector<string> split(string str, string pattern)
 int main()
 {
     ifstream file( "hw1_input.txt");
-    string pattern = " ";
+    char * pattern = " ";
     string line;
     vector<string> info;
     vec3 Eye;
@@ -215,7 +220,9 @@ int main()
     // Read information
     while(getline(file, line))
     {
-        info = split(line, pattern);
+        char *cstr = new char[line.length() + 1];
+        strcpy(cstr, line.c_str());
+        info = split(cstr, pattern);
         if( info[0] == "E")
         {
             float ex = atof(info[1].c_str());
@@ -268,6 +275,15 @@ int main()
             cout << "not mapping";
         }
     }
+
+    /**
+    For every pixel
+        Construct a ray from the eye
+        For every object in the scene
+            Find intersection with ray
+        Keep if closest
+    **/
+
     float halfWidth = float(width) / 2;
     float halfHeight = float(height) / 2;
     distance = halfWidth / tan(M_PI * 0.5 * FieldOfView / 180.);
@@ -299,9 +315,9 @@ int main()
                 screen[i][j] = (Spheres_vector[sp_idx].intersect(ray, t0, t1))? 255:0;
             }
 
-            for (int tri_idx = 1;  tri_idx < Triangles_vector.size() ; tri_idx++)
+            for (int tri_idx = 0;  tri_idx < Triangles_vector.size() ; tri_idx++)
             {
-                screen[i][j] = (Triangles_vector[tri_idx].intersect(ray, t0, t1))? 255:screen[i][j];
+                screen[i][j] = (Triangles_vector[tri_idx].intersect(ray, t0, t1))? 200:screen[i][j];
             }
         }
     }
@@ -321,21 +337,7 @@ int main()
 
     image.outputPPM("reds.ppm");
 
-    /**
-    For every pixel
-        Construct a ray from the eye
-        For every object in the scene
-            Find intersection with ray
-        Keep if closest
-    **/
-    /**
-    Sphere s1;
-    s1.setCenter(1.0, 2.0, 3.0);
-    vec3 v3;
-    vec3 v4(1, 2, 3);
-    v3 = v3 + v4;
-    v3.printCoor();
-    system("pause");
-    **/
+
+
     return 0;
 }

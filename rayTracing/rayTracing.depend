@@ -1,39 +1,5 @@
 # depslib dependency file v1.0
-906665836 source:c:\users\kame169\desktop\algebra3.cpp
-	<math.h>
-	"algebra3.h"
-	<ctype.h>
-
-938803914 c:\users\kame169\desktop\algebra3.h
-	<math.h>
-	<stdio.h>
-	<stdlib.h>
-
-1489464930 source:e:\lou\algebra3\algebra3.cpp
-	<math.h>
-	"algebra3.h"
-	<ctype.h>
-
-1489465145 e:\lou\algebra3\algebra3.h
-	<math.h>
-	<stdio.h>
-	<stdlib.h>
-
-1489461824 source:e:\lou\raytracing\main.cpp
-	<iostream>
-	"../algebra3/algebra3.h"
-
-1489941737 source:d:\advanced-computer-graphics\algebra3\algebra3.cpp
-	<math.h>
-	"algebra3.h"
-	<ctype.h>
-
-1489941737 d:\advanced-computer-graphics\algebra3\algebra3.h
-	<math.h>
-	<stdio.h>
-	<stdlib.h>
-
-1489942546 source:d:\advanced-computer-graphics\raytracing\main.cpp
+1490077245 source:e:\lou\advanced-computer-graphics\raytracing\main.cpp
 	<iostream>
 	<fstream>
 	<vector>
@@ -50,12 +16,4 @@
 	<math.h>
 	<stdio.h>
 	<stdlib.h>
-
-1490018340 source:e:\lou\advanced-computer-graphics\raytracing\main.cpp
-	<iostream>
-	<fstream>
-	<vector>
-	<typeinfo>
-	"../algebra3/algebra3.h"
-	<assert.h>
 
