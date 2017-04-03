@@ -32,6 +32,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Light.cpp" />
+		<Unit filename="Light.h" />
+		<Unit filename="Material.cpp" />
+		<Unit filename="Material.h" />
 		<Unit filename="Ray.cpp" />
 		<Unit filename="Ray.h" />
 		<Unit filename="Sphere.cpp" />

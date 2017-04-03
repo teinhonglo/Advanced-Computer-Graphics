@@ -21,7 +21,8 @@ vector<string> split(char str [], char * pattern)
     std::vector<std::string> result;
     char *p;
     p = strtok(str,pattern);
-    while(p){
+    while(p)
+    {
         result.push_back(p);
         p=strtok(NULL,pattern);
     }
@@ -141,7 +142,7 @@ int main()
     vec3 V = U ^ View_Direction;
     V = V.normalize();
 
-    int screen [width][height];
+    Color screen [width][height];
     float aspectRatio = width / float(height);
     float viewPlaneHalfWidth = tan(M_PI * 0.5 * FieldOfView / 180.);
     float viewPlaneHalfHeight = aspectRatio * viewPlaneHalfWidth;
@@ -151,6 +152,7 @@ int main()
     vec3 yIncVector = -(V * 2 * halfHeight) / height;
     float t0, t1;
     float curNearestDist;
+    int nearestObj;
 
     for(int i = 0; i < width; i++)
     {
@@ -158,37 +160,61 @@ int main()
         {
             vec3 viewPlanePoint = viewPlaneTopLeftPoint + i*xIncVector + j*yIncVector;
             vec3 castRay = viewPlanePoint - Eye;
-            Ray ray(Eye,castRay);
+            Ray ray(Eye, castRay);
             t0 = 0;
             t1 = 0;
             curNearestDist = INT_MAX;
-
+            nearestObj = -1;
+            // Sphere
             for (int sp_idx = 0;  sp_idx < Spheres_vector.size() ; sp_idx++)
             {
                 // Compare whether distance is nearest or not
-                if((Spheres_vector[sp_idx].intersect(ray, t0, t1))){
-                    if (t0 < curNearestDist){
+                if((Spheres_vector[sp_idx].intersect(ray, t0, t1)))
+                {
+                    if (t0 < curNearestDist)
+                    {
+                        nearestObj = sp_idx;
                         curNearestDist = t0;
                     }
-                    //cout << t0 << endl;
-                    screen[i][j] = 255;
-                }else{
-                    screen[i][j] = 0;
                 }
             }
-
+            // Triangle
             for (int tri_idx = 0;  tri_idx < Triangles_vector.size() ; tri_idx++)
             {
                 // Compare whether distance is nearest or not
-                if(Triangles_vector[tri_idx].intersect(ray, t0, t1)){
+                if(Triangles_vector[tri_idx].intersect(ray, t0, t1))
+                {
                     //cout << t0 << endl;
-                    screen[i][j] = 200;
-                }else{
-                    screen[i][j] = screen[i][j];
+                    nearestObj = Spheres_vector.size() + tri_idx;
                 }
+            }
+            // Keep if closest
+            if(nearestObj >= 0){
+                if(nearestObj < Spheres_vector.size())
+                {
+
+                    screen[i][j].R = Spheres_vector[nearestObj].getMaterial().color.R;
+                    screen[i][j].G = Spheres_vector[nearestObj].getMaterial().color.G;
+                    screen[i][j].B = Spheres_vector[nearestObj].getMaterial().color.B;
+                    //cout << "Sphere" << endl;
+                }
+                else
+                {
+                    nearestObj -= Spheres_vector.size();
+                    screen[i][j].R = Triangles_vector[nearestObj].getMaterial().color.R;
+                    screen[i][j].G = Triangles_vector[nearestObj].getMaterial().color.G;
+                    screen[i][j].B = Triangles_vector[nearestObj].getMaterial().color.B;
+                    //cout << "Triangle" << endl;
+                }
+            }else{
+                screen[i][j].R = 0;
+                screen[i][j].G = 0;
+                screen[i][j].B = 0;
             }
         }
     }
+
+
     ColorImage image;
     int x, y;
     Pixel p= {0,0,0};
@@ -198,10 +224,14 @@ int main()
     {
         for (x=0; x<width; x++)
         {
-            p.R = screen[x][y];
+
+            p.R = screen[x][y].R;
+            p.G = screen[x][y].G;
+            p.B = screen[x][y].B;
             image.writePixel(x, y, p);
         }
     }
     image.outputPPM("reds.ppm");
     return 0;
 }
+

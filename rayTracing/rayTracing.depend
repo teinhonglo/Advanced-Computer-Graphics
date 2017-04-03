@@ -67,7 +67,7 @@
 	<stdio.h>
 	<stdlib.h>
 
-1491195429 source:e:\lou\advanced-computer-graphics\raytracing\main.cpp
+1491207191 source:e:\lou\advanced-computer-graphics\raytracing\main.cpp
 	<iostream>
 	<fstream>
 	<vector>
@@ -123,7 +123,7 @@
 	<iostream>
 	"algebra3/algebra3.h"
 
-1491194134 source:e:\lou\advanced-computer-graphics\raytracing\material.cpp
+1491207421 source:e:\lou\advanced-computer-graphics\raytracing\material.cpp
 	"Material.h"
 
 1491194088 e:\lou\advanced-computer-graphics\raytracing\material.h
