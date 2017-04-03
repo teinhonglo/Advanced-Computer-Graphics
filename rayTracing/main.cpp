@@ -2,12 +2,15 @@
 #include <fstream>
 #include <vector>
 #include <typeinfo>
+#include <string.h>
+#include <limits.h>
 #include "algebra3/algebra3.h"
+#include "Material.h"
 #include "Ray.h"
 #include "Sphere.h"
 #include "output.h"
 #include "Triangle.h"
-#include <string.h>
+#include "Light.h"
 
 
 using namespace std;
@@ -27,7 +30,7 @@ vector<string> split(char str [], char * pattern)
 
 int main()
 {
-    ifstream file( "hw1_input.txt");
+    ifstream file( "hw2_input.txt");
     char * pattern = " ";
     string line;
     vector<string> info;
@@ -38,6 +41,8 @@ int main()
     int distance = 1;
     vector<Sphere> Spheres_vector;
     vector<Triangle> Triangles_vector;
+    Light light;
+    Material material;
 
     // Read information
     while(getline(file, line))
@@ -70,12 +75,11 @@ int main()
         }
         else if(info[0] == "S")
         {
-
             float oX = atof(info[1].c_str());
             float oY = atof(info[2].c_str());
             float oZ = atof(info[3].c_str());
             float radius = atof(info[4].c_str());
-            Sphere s(oX, oY, oZ, radius);
+            Sphere s(oX, oY, oZ, radius, material);
             Spheres_vector.push_back(s);
         }
         else if(info[0] == "T")
@@ -89,8 +93,29 @@ int main()
             float x3 = atof(info[7].c_str());
             float y3 = atof(info[8].c_str());
             float z3 = atof(info[9].c_str());
-            Triangle t(x1, y1, z1, x2, y2, z2, x3, y3, z3);
+            Triangle t(x1, y1, z1, x2, y2, z2, x3, y3, z3, material);
             Triangles_vector.push_back(t);
+        }
+        else if(info[0] == "M")
+        {
+            float r = atof(info[1].c_str());
+            float g = atof(info[2].c_str());
+            float b = atof(info[3].c_str());
+            float Ka = atof(info[4].c_str());
+            float Kd = atof(info[5].c_str());
+            float Ks = atof(info[6].c_str());
+            float exp = atof(info[7].c_str());
+            float Reflect = atof(info[8].c_str());
+            float Refract = atof(info[9].c_str());
+            float Nr = atof(info[10].c_str());
+            material.setMaterial(r, g, b, Ka, Kd, Ks, exp, Reflect, Refract, Nr);
+        }
+        else if(info[0] == "L")
+        {
+            float x1 = atof(info[1].c_str());
+            float y1 = atof(info[2].c_str());
+            float z1 = atof(info[3].c_str());
+            light.setLight(vec3(x1, y1, z1));
         }
         else
         {
@@ -124,6 +149,8 @@ int main()
     vec3 viewPlaneTopLeftPoint = lookAtPoint + halfHeight * V + halfWidth * U;
     vec3 xIncVector = -(U * 2 * halfWidth) / width;
     vec3 yIncVector = -(V * 2 * halfHeight) / height;
+    float t0, t1;
+    float curNearestDist;
 
     for(int i = 0; i < width; i++)
     {
@@ -132,15 +159,33 @@ int main()
             vec3 viewPlanePoint = viewPlaneTopLeftPoint + i*xIncVector + j*yIncVector;
             vec3 castRay = viewPlanePoint - Eye;
             Ray ray(Eye,castRay);
-            float t0, t1;
+            t0 = 0;
+            t1 = 0;
+            curNearestDist = INT_MAX;
+
             for (int sp_idx = 0;  sp_idx < Spheres_vector.size() ; sp_idx++)
             {
-                screen[i][j] = (Spheres_vector[sp_idx].intersect(ray, t0, t1))? 255:0;
+                // Compare whether distance is nearest or not
+                if((Spheres_vector[sp_idx].intersect(ray, t0, t1))){
+                    if (t0 < curNearestDist){
+                        curNearestDist = t0;
+                    }
+                    //cout << t0 << endl;
+                    screen[i][j] = 255;
+                }else{
+                    screen[i][j] = 0;
+                }
             }
 
             for (int tri_idx = 0;  tri_idx < Triangles_vector.size() ; tri_idx++)
             {
-                screen[i][j] = (Triangles_vector[tri_idx].intersect(ray, t0, t1))? 200:screen[i][j];
+                // Compare whether distance is nearest or not
+                if(Triangles_vector[tri_idx].intersect(ray, t0, t1)){
+                    //cout << t0 << endl;
+                    screen[i][j] = 200;
+                }else{
+                    screen[i][j] = screen[i][j];
+                }
             }
         }
     }
