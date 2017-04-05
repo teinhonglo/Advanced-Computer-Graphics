@@ -1,10 +1,14 @@
 #include "Material.h"
 
+void Color::setColor(float r, float g, float b){
+	this->R = r;
+	this->G = g;
+	this->B = b;
+}
+
 void Material::setMaterial(float r, float g, float b, float Ka, float Kd, float Ks, float exp, float Reflect, float Refract, float Nr)
 {
-    this->color.R = r * 255;
-	this->color.G = g * 255;
-	this->color.B = b * 255;
+    this->color.setColor(r * 255, g * 255, b * 255);
 	this->Ka = Ka;
 	this->Kd = Kd;
 	this->Ks = Ks;

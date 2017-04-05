@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1491392930 source:d:\advanced-computer-graphics\raytracing\main.cpp
+1491396176 source:d:\advanced-computer-graphics\raytracing\main.cpp
 	<iostream>
 	<fstream>
 	<vector>
@@ -143,10 +143,10 @@
 	<iostream>
 	"algebra3/algebra3.h"
 
-1491285579 source:d:\advanced-computer-graphics\raytracing\material.cpp
+1491396199 source:d:\advanced-computer-graphics\raytracing\material.cpp
 	"Material.h"
 
-1491285579 d:\advanced-computer-graphics\raytracing\material.h
+1491396170 d:\advanced-computer-graphics\raytracing\material.h
 	<iostream>
 	"algebra3/algebra3.h"
 

@@ -12,6 +12,7 @@
 #include "Triangle.h"
 #include "Light.h"
 
+int TRACEDEPTH = 10;
 
 using namespace std;
 
@@ -29,7 +30,7 @@ vector<string> split(char str [], char * pattern)
     return result;
 }
 
-Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector, int i, int j)
+Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector, int i, int j, int depth)
 {
     float t0 = 0;
     float t1 = 0;
@@ -221,10 +222,8 @@ int main()
             vec3 viewPlanePoint = viewPlaneTopLeftPoint + i*xIncVector + j*yIncVector;
             vec3 castRay = viewPlanePoint - Eye;
             Ray ray(Eye, castRay);
-            Color clr = tracing(ray, Spheres_vector, Triangles_vector, i, j);
-            screen[i][j].R = clr.R;
-            screen[i][j].G = clr.G;
-            screen[i][j].B = clr.B;
+            Color clr = tracing(ray, Spheres_vector, Triangles_vector, i, j, 10);
+            screen[i][j].setColor(clr.R, clr.G, clr.B);
         }
     }
 

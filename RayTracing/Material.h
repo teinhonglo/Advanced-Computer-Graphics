@@ -7,6 +7,7 @@ struct Color{
 	float R;
 	float G;
 	float B;
+	void setColor(float r, float g, float b);
 };
 
 struct Material
