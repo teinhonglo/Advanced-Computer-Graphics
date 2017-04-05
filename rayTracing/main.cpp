@@ -29,12 +29,13 @@ vector<string> split(char str [], char * pattern)
     return result;
 }
 
-int tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector, vector< vector<Color> > &screen, int i, int j)
+Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector, int i, int j)
 {
     float t0 = 0;
     float t1 = 0;
     float curNearestDist = INT_MAX;
     int nearestObj = -1;
+    Color acc_color;
     // Sphere
     for (int sp_idx = 0;  sp_idx < Spheres_vector.size() ; sp_idx++)
     {
@@ -64,26 +65,27 @@ int tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles_v
         if(nearestObj < Spheres_vector.size())
         {
 
-            screen[i][j].R = Spheres_vector[nearestObj].getMaterial().color.R;
-            screen[i][j].G = Spheres_vector[nearestObj].getMaterial().color.G;
-            screen[i][j].B = Spheres_vector[nearestObj].getMaterial().color.B;
+            acc_color.R = Spheres_vector[nearestObj].getMaterial().color.R;
+            acc_color.G = Spheres_vector[nearestObj].getMaterial().color.G;
+            acc_color.B = Spheres_vector[nearestObj].getMaterial().color.B;
             //cout << "Sphere" << endl;
         }
         else
         {
             nearestObj -= Spheres_vector.size();
-            screen[i][j].R = Triangles_vector[nearestObj].getMaterial().color.R;
-            screen[i][j].G = Triangles_vector[nearestObj].getMaterial().color.G;
-            screen[i][j].B = Triangles_vector[nearestObj].getMaterial().color.B;
+            acc_color.R = Triangles_vector[nearestObj].getMaterial().color.R;
+            acc_color.G = Triangles_vector[nearestObj].getMaterial().color.G;
+            acc_color.B = Triangles_vector[nearestObj].getMaterial().color.B;
             //cout << "Triangle" << endl;
         }
     }
     else
     {
-        screen[i][j].R = 0;
-        screen[i][j].G = 0;
-        screen[i][j].B = 0;
+        acc_color.R = 0;
+        acc_color.G = 0;
+        acc_color.B = 0;
     }
+    return acc_color;
 }
 
 
@@ -219,7 +221,10 @@ int main()
             vec3 viewPlanePoint = viewPlaneTopLeftPoint + i*xIncVector + j*yIncVector;
             vec3 castRay = viewPlanePoint - Eye;
             Ray ray(Eye, castRay);
-            tracing(ray, Spheres_vector, Triangles_vector, screen, i, j);
+            Color clr = tracing(ray, Spheres_vector, Triangles_vector, i, j);
+            screen[i][j].R = clr.R;
+            screen[i][j].G = clr.G;
+            screen[i][j].B = clr.B;
         }
     }
 
