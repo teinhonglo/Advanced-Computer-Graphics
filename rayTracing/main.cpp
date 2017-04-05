@@ -29,6 +29,64 @@ vector<string> split(char str [], char * pattern)
     return result;
 }
 
+int tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector, vector< vector<Color> > &screen, int i, int j)
+{
+    float t0 = 0;
+    float t1 = 0;
+    float curNearestDist = INT_MAX;
+    int nearestObj = -1;
+    // Sphere
+    for (int sp_idx = 0;  sp_idx < Spheres_vector.size() ; sp_idx++)
+    {
+        // Compare whether distance is nearest or not
+        if((Spheres_vector[sp_idx].intersect(ray, t0, t1)))
+        {
+            if (t0 < curNearestDist)
+            {
+                nearestObj = sp_idx;
+                curNearestDist = t0;
+            }
+        }
+    }
+    // Triangle
+    for (int tri_idx = 0;  tri_idx < Triangles_vector.size() ; tri_idx++)
+    {
+        // Compare whether distance is nearest or not
+        if(Triangles_vector[tri_idx].intersect(ray, t0, t1))
+        {
+            //cout << t0 << endl;
+            nearestObj = Spheres_vector.size() + tri_idx;
+        }
+    }
+    // Keep if closest
+    if(nearestObj >= 0)
+    {
+        if(nearestObj < Spheres_vector.size())
+        {
+
+            screen[i][j].R = Spheres_vector[nearestObj].getMaterial().color.R;
+            screen[i][j].G = Spheres_vector[nearestObj].getMaterial().color.G;
+            screen[i][j].B = Spheres_vector[nearestObj].getMaterial().color.B;
+            //cout << "Sphere" << endl;
+        }
+        else
+        {
+            nearestObj -= Spheres_vector.size();
+            screen[i][j].R = Triangles_vector[nearestObj].getMaterial().color.R;
+            screen[i][j].G = Triangles_vector[nearestObj].getMaterial().color.G;
+            screen[i][j].B = Triangles_vector[nearestObj].getMaterial().color.B;
+            //cout << "Triangle" << endl;
+        }
+    }
+    else
+    {
+        screen[i][j].R = 0;
+        screen[i][j].G = 0;
+        screen[i][j].B = 0;
+    }
+}
+
+
 int main()
 {
     ifstream file( "hw2_input.txt");
@@ -142,7 +200,7 @@ int main()
     vec3 V = U ^ View_Direction;
     V = V.normalize();
 
-    Color screen [width][height];
+    vector<vector <Color> > screen(width, vector <Color>(height));
     float aspectRatio = width / float(height);
     float viewPlaneHalfWidth = tan(M_PI * 0.5 * FieldOfView / 180.);
     float viewPlaneHalfHeight = aspectRatio * viewPlaneHalfWidth;
@@ -161,56 +219,7 @@ int main()
             vec3 viewPlanePoint = viewPlaneTopLeftPoint + i*xIncVector + j*yIncVector;
             vec3 castRay = viewPlanePoint - Eye;
             Ray ray(Eye, castRay);
-            t0 = 0;
-            t1 = 0;
-            curNearestDist = INT_MAX;
-            nearestObj = -1;
-            // Sphere
-            for (int sp_idx = 0;  sp_idx < Spheres_vector.size() ; sp_idx++)
-            {
-                // Compare whether distance is nearest or not
-                if((Spheres_vector[sp_idx].intersect(ray, t0, t1)))
-                {
-                    if (t0 < curNearestDist)
-                    {
-                        nearestObj = sp_idx;
-                        curNearestDist = t0;
-                    }
-                }
-            }
-            // Triangle
-            for (int tri_idx = 0;  tri_idx < Triangles_vector.size() ; tri_idx++)
-            {
-                // Compare whether distance is nearest or not
-                if(Triangles_vector[tri_idx].intersect(ray, t0, t1))
-                {
-                    //cout << t0 << endl;
-                    nearestObj = Spheres_vector.size() + tri_idx;
-                }
-            }
-            // Keep if closest
-            if(nearestObj >= 0){
-                if(nearestObj < Spheres_vector.size())
-                {
-
-                    screen[i][j].R = Spheres_vector[nearestObj].getMaterial().color.R;
-                    screen[i][j].G = Spheres_vector[nearestObj].getMaterial().color.G;
-                    screen[i][j].B = Spheres_vector[nearestObj].getMaterial().color.B;
-                    //cout << "Sphere" << endl;
-                }
-                else
-                {
-                    nearestObj -= Spheres_vector.size();
-                    screen[i][j].R = Triangles_vector[nearestObj].getMaterial().color.R;
-                    screen[i][j].G = Triangles_vector[nearestObj].getMaterial().color.G;
-                    screen[i][j].B = Triangles_vector[nearestObj].getMaterial().color.B;
-                    //cout << "Triangle" << endl;
-                }
-            }else{
-                screen[i][j].R = 0;
-                screen[i][j].G = 0;
-                screen[i][j].B = 0;
-            }
+            tracing(ray, Spheres_vector, Triangles_vector, screen, i, j);
         }
     }
 

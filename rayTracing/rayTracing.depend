@@ -1,15 +1,18 @@
 # depslib dependency file v1.0
-1490104881 source:d:\advanced-computer-graphics\raytracing\main.cpp
+1491389011 source:d:\advanced-computer-graphics\raytracing\main.cpp
 	<iostream>
 	<fstream>
 	<vector>
 	<typeinfo>
+	<string.h>
+	<limits.h>
 	"algebra3/algebra3.h"
+	"Material.h"
 	"Ray.h"
 	"Sphere.h"
 	"output.h"
 	"Triangle.h"
-	<string.h>
+	"Light.h"
 
 1490103966 d:\advanced-computer-graphics\algebra3\algebra3.h
 	<math.h>
@@ -20,20 +23,23 @@
 	<iostream>
 	"algebra3/algebra3.h"
 
-1490104964 d:\advanced-computer-graphics\raytracing\sphere.h
+1491285579 d:\advanced-computer-graphics\raytracing\sphere.h
 	<iostream>
 	"algebra3/algebra3.h"
+	"Material.h"
 	"Ray.h"
+	<math.h>
 
 1490100787 d:\advanced-computer-graphics\raytracing\output.h
 	<iostream>
 	<assert.h>
 	<fstream>
 
-1490104984 d:\advanced-computer-graphics\raytracing\triangle.h
+1491285579 d:\advanced-computer-graphics\raytracing\triangle.h
 	<iostream>
 	"algebra3/algebra3.h"
 	"Ray.h"
+	"Material.h"
 
 1490100146 source:d:\advanced-computer-graphics\raytracing\output.cpp
 	"output.h"
@@ -41,10 +47,10 @@
 1490098961 source:d:\advanced-computer-graphics\raytracing\ray.cpp
 	"Ray.h"
 
-1490100835 source:d:\advanced-computer-graphics\raytracing\sphere.cpp
+1491285579 source:d:\advanced-computer-graphics\raytracing\sphere.cpp
 	"Sphere.h"
 
-1490101293 source:d:\advanced-computer-graphics\raytracing\triangle.cpp
+1491285579 source:d:\advanced-computer-graphics\raytracing\triangle.cpp
 	"Triangle.h"
 
 1490023917 source:d:\advanced-computer-graphics\raytracing\algebra3\algebra3.cpp
@@ -127,6 +133,20 @@
 	"Material.h"
 
 1491194088 e:\lou\advanced-computer-graphics\raytracing\material.h
+	<iostream>
+	"algebra3/algebra3.h"
+
+1491285579 source:d:\advanced-computer-graphics\raytracing\light.cpp
+	"Light.h"
+
+1491285579 d:\advanced-computer-graphics\raytracing\light.h
+	<iostream>
+	"algebra3/algebra3.h"
+
+1491285579 source:d:\advanced-computer-graphics\raytracing\material.cpp
+	"Material.h"
+
+1491285579 d:\advanced-computer-graphics\raytracing\material.h
 	<iostream>
 	"algebra3/algebra3.h"
 
