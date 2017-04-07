@@ -39,19 +39,14 @@ Color reflection(Ray incoming_ray, vec3 normal, vec3 intersect_p, int depth,
     vec3 relect_dir = incoming_ray.getDir() - 2 * (incoming_ray.getDir() * normal) * normal;
     Ray reflect_ray(intersect_p, relect_dir);
     Color Reflection_Color;
-    if(depth < 0)
-        return Reflection_Color;
-    else{
-         Color clr = tracing(reflect_ray, Spheres_vector, Triangles_vector, light, eye, depth);
-         Reflection_Color.R += 0.5 * clr.R;
-         Reflection_Color.G += 0.5 * clr.G;
-         Reflection_Color.B += 0.5 * clr.B;
-         return Reflection_Color;
-    }
 
+    Color clr = tracing(reflect_ray, Spheres_vector, Triangles_vector, light, eye, depth);
+    return clr;
 }
 // Refraction
-Color refraction(Ray incoming_ray, vec3 normal, int depth)
+Color refraction(Ray incoming_ray, vec3 normal, vec3 intersect_p, int depth,
+                 vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector,
+                 Light light, vec3 eye)
 {
 
 }
@@ -141,25 +136,28 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
         curColor.G = ka * Ia * color.G + kd * Id * color.G + ks * Is * 255;
         curColor.B = ka * Ia * color.B + kd * Id * color.B + ks * Is * 255;
 
+        if(depth > 0){
+            // Reflection Recursive Method
+            Color reflection_color = reflection(ray, N, intersect_p, depth-1, Spheres_vector, Triangles_vector, light, eye);
+            // Refraction Recursive Method
+            // Accumulated Color
+            curColor.R += 0.5 * reflection_color.R;
+            curColor.G += 0.5 * reflection_color.G;
+            curColor.B += 0.5 * reflection_color.B;
+        }
         curColor.R = (curColor.R > 255)? 255 :curColor.R;
         curColor.G = (curColor.G > 255)? 255 :curColor.G;
         curColor.B = (curColor.B > 255)? 255 :curColor.B;
-
-        // Reflection Recursive Method
-        Color reflection_color = reflection(ray, N, intersect_p, depth-1, Spheres_vector, Triangles_vector, light, eye);
-        // Refraction Recursive Method
-        // Accumulated Color
-        curColor.R += reflection_color.R;
-        curColor.G += reflection_color.G;
-        curColor.B += reflection_color.B;
+        return curColor;
     }
     else
     {
         curColor.R = 0;
         curColor.G = 0;
         curColor.B = 0;
+        return curColor;
     }
-    return curColor;
+
 }
 
 
@@ -296,7 +294,7 @@ int main()
             vec3 castRay = viewPlanePoint - Eye;
             Ray ray(Eye, castRay.normalize());
             Color clr;
-            clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 10);
+            clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 100);
             screen[i][j].setColor(clr.R, clr.G, clr.B);
         }
     }

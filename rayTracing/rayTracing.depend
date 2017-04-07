@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1491396176 source:d:\advanced-computer-graphics\raytracing\main.cpp
+1491584688 source:d:\advanced-computer-graphics\raytracing\main.cpp
 	<iostream>
 	<fstream>
 	<vector>
@@ -23,7 +23,7 @@
 	<iostream>
 	"algebra3/algebra3.h"
 
-1491285579 d:\advanced-computer-graphics\raytracing\sphere.h
+1491581921 d:\advanced-computer-graphics\raytracing\sphere.h
 	<iostream>
 	"algebra3/algebra3.h"
 	"Material.h"
@@ -35,7 +35,7 @@
 	<assert.h>
 	<fstream>
 
-1491285579 d:\advanced-computer-graphics\raytracing\triangle.h
+1491581921 d:\advanced-computer-graphics\raytracing\triangle.h
 	<iostream>
 	"algebra3/algebra3.h"
 	"Ray.h"
@@ -47,10 +47,10 @@
 1490098961 source:d:\advanced-computer-graphics\raytracing\ray.cpp
 	"Ray.h"
 
-1491285579 source:d:\advanced-computer-graphics\raytracing\sphere.cpp
+1491581921 source:d:\advanced-computer-graphics\raytracing\sphere.cpp
 	"Sphere.h"
 
-1491285579 source:d:\advanced-computer-graphics\raytracing\triangle.cpp
+1491581921 source:d:\advanced-computer-graphics\raytracing\triangle.cpp
 	"Triangle.h"
 
 1490023917 source:d:\advanced-computer-graphics\raytracing\algebra3\algebra3.cpp
@@ -143,10 +143,10 @@
 	<iostream>
 	"algebra3/algebra3.h"
 
-1491396199 source:d:\advanced-computer-graphics\raytracing\material.cpp
+1491581921 source:d:\advanced-computer-graphics\raytracing\material.cpp
 	"Material.h"
 
-1491396170 d:\advanced-computer-graphics\raytracing\material.h
+1491581921 d:\advanced-computer-graphics\raytracing\material.h
 	<iostream>
 	"algebra3/algebra3.h"
 
