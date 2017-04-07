@@ -32,17 +32,39 @@ vector<string> split(char str [], char * pattern)
     return result;
 }
 // Reflection
+Color reflection(Ray incoming_ray, vec3 normal, vec3 intersect_p, int depth,
+                 vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector,
+                 Light light, vec3 eye)
+{
+    vec3 relect_dir = incoming_ray.getDir() - 2 * (incoming_ray.getDir() * normal) * normal;
+    Ray reflect_ray(intersect_p, relect_dir);
+    Color Reflection_Color;
+    if(depth < 0)
+        return Reflection_Color;
+    else{
+         Color clr = tracing(reflect_ray, Spheres_vector, Triangles_vector, light, eye, depth);
+         Reflection_Color.R += 0.5 * clr.R;
+         Reflection_Color.G += 0.5 * clr.G;
+         Reflection_Color.B += 0.5 * clr.B;
+         return Reflection_Color;
+    }
 
+}
 // Refraction
+Color refraction(Ray incoming_ray, vec3 normal, int depth)
+{
 
+}
 // Tracing Ray
-Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector, Light light, vec3 eye, int depth)
+Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector,
+              Light light, vec3 eye, int depth)
 {
     float t0 = 0;
     float t1 = 0;
     float curNearestDist = INT_MAX;
     int nearestObj = -1;
-    Color acc_color;
+    Color curColor;
+
     // Sphere
     for (int sp_idx = 0;  sp_idx < Spheres_vector.size() ; sp_idx++)
     {
@@ -115,25 +137,29 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
         float Id = ((N * L) > 0) ?  li * (N * L) : 0;
         float Is = ((N * H) > 0) ?  li * pow((H * N), exp) : 0;
         float Ia = 1;
-        acc_color.R = ka * Ia * color.R + kd * Id * color.R + ks * Is * 255;
-        acc_color.G = ka * Ia * color.G + kd * Id * color.G + ks * Is * 255;
-        acc_color.B = ka * Ia * color.B + kd * Id * color.B + ks * Is * 255;
+        curColor.R = ka * Ia * color.R + kd * Id * color.R + ks * Is * 255;
+        curColor.G = ka * Ia * color.G + kd * Id * color.G + ks * Is * 255;
+        curColor.B = ka * Ia * color.B + kd * Id * color.B + ks * Is * 255;
 
-        acc_color.R = (acc_color.R > 255)? 255 :acc_color.R;
-        acc_color.G = (acc_color.G > 255)? 255 :acc_color.G;
-        acc_color.B = (acc_color.B > 255)? 255 :acc_color.B;
+        curColor.R = (curColor.R > 255)? 255 :curColor.R;
+        curColor.G = (curColor.G > 255)? 255 :curColor.G;
+        curColor.B = (curColor.B > 255)? 255 :curColor.B;
 
         // Reflection Recursive Method
+        Color reflection_color = reflection(ray, N, intersect_p, depth-1, Spheres_vector, Triangles_vector, light, eye);
         // Refraction Recursive Method
         // Accumulated Color
+        curColor.R += reflection_color.R;
+        curColor.G += reflection_color.G;
+        curColor.B += reflection_color.B;
     }
     else
     {
-        acc_color.R = 0;
-        acc_color.G = 0;
-        acc_color.B = 0;
+        curColor.R = 0;
+        curColor.G = 0;
+        curColor.B = 0;
     }
-    return acc_color;
+    return curColor;
 }
 
 
@@ -269,7 +295,8 @@ int main()
             vec3 viewPlanePoint = viewPlaneTopLeftPoint + i*xIncVector + j*yIncVector;
             vec3 castRay = viewPlanePoint - Eye;
             Ray ray(Eye, castRay.normalize());
-            Color clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 10);
+            Color clr;
+            clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 10);
             screen[i][j].setColor(clr.R, clr.G, clr.B);
         }
     }

@@ -1,5 +1,14 @@
 #include "Material.h"
 
+Color::Color(){
+}
+
+Color::Color(float r, float g, float b){
+	this->R = r;
+	this->G = g;
+	this->B = b;
+}
+
 void Color::setColor(float r, float g, float b){
 	this->R = r;
 	this->G = g;

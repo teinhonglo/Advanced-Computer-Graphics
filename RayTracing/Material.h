@@ -7,6 +7,8 @@ struct Color{
 	float R;
 	float G;
 	float B;
+	Color();
+	Color(float r, float g, float b);
 	void setColor(float r, float g, float b);
 };
 
