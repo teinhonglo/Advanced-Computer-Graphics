@@ -7,6 +7,7 @@ Triangle::Triangle(float x1, float y1, float z1,
     position.set(x1, y1, z1);
     v1.set(x2, y2, z2);
     v2.set(x3, y3, z3);
+    this->normal = (v1 - this->position) ^ (v2 - this->position); // cross product
     this->isHit = false;
 }
 
@@ -49,6 +50,10 @@ bool Triangle::intersect(Ray ray, float &t0, float &t1)
     float t  = Q * v2 / det;
     t0 = t;
     return true;
+}
+
+vec3 Triangle::getNormal(){
+    return this->normal;
 }
 
 Material Triangle::getMaterial(){

@@ -15,7 +15,9 @@
 int TRACEDEPTH = 10;
 
 using namespace std;
-
+vector<string> split(char [], char *);
+Color tracing(Ray, vector<Sphere>, vector<Triangle>, Light, vec3, int);
+// Split string with space
 vector<string> split(char str [], char * pattern)
 {
 
@@ -29,8 +31,12 @@ vector<string> split(char str [], char * pattern)
     }
     return result;
 }
+// Reflection
 
-Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector, int i, int j, int depth)
+// Refraction
+
+// Tracing Ray
+Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector, Light light, vec3 eye, int depth)
 {
     float t0 = 0;
     float t1 = 0;
@@ -63,22 +69,63 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
     // Keep if closest
     if(nearestObj >= 0)
     {
+        vec3 intersect_p = ray.getPoint(curNearestDist);
+        vec3 N;                                                     // Normal
+        vec3 L = (light.getPostion() - intersect_p).normalize();    // Light - intersect
+        vec3 V = (eye - intersect_p).normalize();                   // View - intersect
+        vec3 H = (L + V).normalize();                               // L + V
+        float exp;
+        float li = 1.0;                                             // Light intensity
+        float ka, kd, ks;
+        Color color;
+
         if(nearestObj < Spheres_vector.size())
         {
-
-            acc_color.R = Spheres_vector[nearestObj].getMaterial().color.R;
-            acc_color.G = Spheres_vector[nearestObj].getMaterial().color.G;
-            acc_color.B = Spheres_vector[nearestObj].getMaterial().color.B;
+            color.R = Spheres_vector[nearestObj].getMaterial().color.R;
+            color.G = Spheres_vector[nearestObj].getMaterial().color.G;
+            color.B = Spheres_vector[nearestObj].getMaterial().color.B;
+            // Get Normal
+            N = intersect_p - Spheres_vector[nearestObj].getCenter();
+            N = N.normalize();
+            // Get constant
+            exp = Spheres_vector[nearestObj].getMaterial().exp;
+            ka = Spheres_vector[nearestObj].getMaterial().Ka;
+            kd = Spheres_vector[nearestObj].getMaterial().Kd;
+            ks = Spheres_vector[nearestObj].getMaterial().Ks;
+            // cout << (intersect_p - Spheres_vector[nearestObj].getCenter()).length() << endl;
             //cout << "Sphere" << endl;
         }
         else
         {
             nearestObj -= Spheres_vector.size();
-            acc_color.R = Triangles_vector[nearestObj].getMaterial().color.R;
-            acc_color.G = Triangles_vector[nearestObj].getMaterial().color.G;
-            acc_color.B = Triangles_vector[nearestObj].getMaterial().color.B;
+            color.R = Triangles_vector[nearestObj].getMaterial().color.R;
+            color.G = Triangles_vector[nearestObj].getMaterial().color.G;
+            color.B = Triangles_vector[nearestObj].getMaterial().color.B;
+            // Get Normal
+            N = Triangles_vector[nearestObj].getNormal();
+            N = N.normalize();
+            // Get constant
+            exp = Triangles_vector[nearestObj].getMaterial().exp;
+            ka = Triangles_vector[nearestObj].getMaterial().Ka;
+            kd = Triangles_vector[nearestObj].getMaterial().Kd;
+            ks = Triangles_vector[nearestObj].getMaterial().Ks;
             //cout << "Triangle" << endl;
         }
+        // Phong Reflection model
+        float Id = ((N * L) > 0) ?  li * (N * L) : 0;
+        float Is = ((N * H) > 0) ?  li * pow((H * N), exp) : 0;
+        float Ia = 1;
+        acc_color.R = ka * Ia * color.R + kd * Id * color.R + ks * Is * 255;
+        acc_color.G = ka * Ia * color.G + kd * Id * color.G + ks * Is * 255;
+        acc_color.B = ka * Ia * color.B + kd * Id * color.B + ks * Is * 255;
+
+        acc_color.R = (acc_color.R > 255)? 255 :acc_color.R;
+        acc_color.G = (acc_color.G > 255)? 255 :acc_color.G;
+        acc_color.B = (acc_color.B > 255)? 255 :acc_color.B;
+
+        // Reflection Recursive Method
+        // Refraction Recursive Method
+        // Accumulated Color
     }
     else
     {
@@ -221,8 +268,8 @@ int main()
         {
             vec3 viewPlanePoint = viewPlaneTopLeftPoint + i*xIncVector + j*yIncVector;
             vec3 castRay = viewPlanePoint - Eye;
-            Ray ray(Eye, castRay);
-            Color clr = tracing(ray, Spheres_vector, Triangles_vector, i, j, 10);
+            Ray ray(Eye, castRay.normalize());
+            Color clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 10);
             screen[i][j].setColor(clr.R, clr.G, clr.B);
         }
     }

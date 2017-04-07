@@ -20,6 +20,22 @@ void Sphere::setCenter(float oX, float oY, float oZ)
     this->center.set(oX, oY, oZ);
 }
 
+vec3 Sphere::getCenter()
+{
+    return this->center;
+}
+
+void Sphere::setRadius(float r)
+{
+    this->radius = r;
+}
+
+vec3 Sphere::getRadius()
+{
+    return this->radius;
+}
+
+
 bool Sphere::intersect(Ray ray, float &t0, float &t1)
 {
     vec3 ori = ray.getOri();
