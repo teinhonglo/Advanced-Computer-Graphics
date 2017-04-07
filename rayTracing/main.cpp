@@ -37,7 +37,7 @@ Color reflection(Ray incoming_ray, vec3 normal, vec3 intersect_p, int depth,
                  Light light, vec3 eye)
 {
     vec3 relect_dir = incoming_ray.getDir() - 2 * (incoming_ray.getDir() * normal) * normal;
-    Ray reflect_ray(intersect_p, relect_dir);
+    Ray reflect_ray(intersect_p, relect_dir.normalize());
     Color Reflection_Color;
 
     Color clr = tracing(reflect_ray, Spheres_vector, Triangles_vector, light, eye, depth);
@@ -294,7 +294,7 @@ int main()
             vec3 castRay = viewPlanePoint - Eye;
             Ray ray(Eye, castRay.normalize());
             Color clr;
-            clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 100);
+            clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 10);
             screen[i][j].setColor(clr.R, clr.G, clr.B);
         }
     }
