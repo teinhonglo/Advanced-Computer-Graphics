@@ -94,6 +94,7 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
         float exp;
         float li = 1.0;                                             // Light intensity
         float ka, kd, ks;
+        float reflect, refract;
         Color color;
 
         if(nearestObj < Spheres_vector.size())
@@ -109,6 +110,8 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
             ka = Spheres_vector[nearestObj].getMaterial().Ka;
             kd = Spheres_vector[nearestObj].getMaterial().Kd;
             ks = Spheres_vector[nearestObj].getMaterial().Ks;
+            reflect = Spheres_vector[nearestObj].getMaterial().Reflect;
+            refract = Spheres_vector[nearestObj].getMaterial().Refract;
             // cout << (intersect_p - Spheres_vector[nearestObj].getCenter()).length() << endl;
             //cout << "Sphere" << endl;
         }
@@ -126,6 +129,8 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
             ka = Triangles_vector[nearestObj].getMaterial().Ka;
             kd = Triangles_vector[nearestObj].getMaterial().Kd;
             ks = Triangles_vector[nearestObj].getMaterial().Ks;
+            reflect = Triangles_vector[nearestObj].getMaterial().Reflect;
+            refract = Triangles_vector[nearestObj].getMaterial().Refract;
             //cout << "Triangle" << endl;
         }
         // Phong Reflection model
@@ -141,9 +146,9 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
             Color reflection_color = reflection(ray, N, intersect_p, depth-1, Spheres_vector, Triangles_vector, light, eye);
             // Refraction Recursive Method
             // Accumulated Color
-            curColor.R += 0.5 * reflection_color.R;
-            curColor.G += 0.5 * reflection_color.G;
-            curColor.B += 0.5 * reflection_color.B;
+            curColor.R += 0.2 * reflection_color.R;
+            curColor.G += 0.2 * reflection_color.G;
+            curColor.B += 0.2 * reflection_color.B;
         }
         curColor.R = (curColor.R > 255)? 255 :curColor.R;
         curColor.G = (curColor.G > 255)? 255 :curColor.G;
