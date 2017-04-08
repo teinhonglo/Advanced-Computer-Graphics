@@ -44,11 +44,16 @@ Color reflection(Ray incoming_ray, vec3 normal, vec3 intersect_p, int depth,
     return clr;
 }
 // Refraction
-Color refraction(Ray incoming_ray, vec3 normal, vec3 intersect_p, int depth,
+Color refraction(Ray incoming_ray, vec3 normal, vec3 intersect_p, float Nr,int depth,
                  vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector,
                  Light light, vec3 eye)
 {
-
+    float cos_theta1 = - normal * incoming_ray.getDir();
+    float cos_theta2 = sqrt(1- (1 / pow(Nr, 2)) * (1 - pow(cos_theta1, 2)) );
+    vec3 refract_dir = (incoming_ray.getDir() / Nr) + ( cos_theta1 / Nr - cos_theta2) * normal;
+    Ray refract_ray(intersect_p, refract_dir);
+    Color clr = tracing(refract_ray, Spheres_vector, Triangles_vector, light, eye, depth);
+    return clr;
 }
 // Tracing Ray
 Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector,
@@ -95,6 +100,7 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
         float li = 1.0;                                             // Light intensity
         float ka, kd, ks;
         float reflect, refract;
+        float Nr;
         Color color;
 
         if(nearestObj < Spheres_vector.size())
@@ -112,6 +118,7 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
             ks = Spheres_vector[nearestObj].getMaterial().Ks;
             reflect = Spheres_vector[nearestObj].getMaterial().Reflect;
             refract = Spheres_vector[nearestObj].getMaterial().Refract;
+            Nr = Spheres_vector[nearestObj].getMaterial().Nr;
             // cout << (intersect_p - Spheres_vector[nearestObj].getCenter()).length() << endl;
             //cout << "Sphere" << endl;
         }
@@ -131,6 +138,7 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
             ks = Triangles_vector[nearestObj].getMaterial().Ks;
             reflect = Triangles_vector[nearestObj].getMaterial().Reflect;
             refract = Triangles_vector[nearestObj].getMaterial().Refract;
+            Nr = Triangles_vector[nearestObj].getMaterial().Nr;
             //cout << "Triangle" << endl;
         }
         // Phong Reflection model
@@ -145,10 +153,11 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
             // Reflection Recursive Method
             Color reflection_color = reflection(ray, N, intersect_p, depth-1, Spheres_vector, Triangles_vector, light, eye);
             // Refraction Recursive Method
+            Color refraction_color = refraction(ray, N, intersect_p, Nr, depth-1, Spheres_vector, Triangles_vector, light, eye);
             // Accumulated Color
-            curColor.R += 0.2 * reflection_color.R;
-            curColor.G += 0.2 * reflection_color.G;
-            curColor.B += 0.2 * reflection_color.B;
+            curColor.R += reflect * reflection_color.R + refract * refraction_color.R;
+            curColor.G += reflect * reflection_color.G + refract * refraction_color.G;
+            curColor.B += reflect * reflection_color.B + refract * refraction_color.B;
         }
         curColor.R = (curColor.R > 255)? 255 :curColor.R;
         curColor.G = (curColor.G > 255)? 255 :curColor.G;
@@ -299,7 +308,7 @@ int main()
             vec3 castRay = viewPlanePoint - Eye;
             Ray ray(Eye, castRay.normalize());
             Color clr;
-            clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 10);
+            clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 3);
             screen[i][j].setColor(clr.R, clr.G, clr.B);
         }
     }
