@@ -110,7 +110,7 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
             color.B = Spheres_vector[nearestObj].getMaterial().color.B;
             // Get Normal
             N = intersect_p - Spheres_vector[nearestObj].getCenter();
-            N = N.normalize();
+            N.normalize();
             // Get constant
             exp = Spheres_vector[nearestObj].getMaterial().exp;
             ka = Spheres_vector[nearestObj].getMaterial().Ka;
@@ -119,7 +119,6 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
             reflect = Spheres_vector[nearestObj].getMaterial().Reflect;
             refract = Spheres_vector[nearestObj].getMaterial().Refract;
             Nr = Spheres_vector[nearestObj].getMaterial().Nr;
-            // cout << (intersect_p - Spheres_vector[nearestObj].getCenter()).length() << endl;
             //cout << "Sphere" << endl;
         }
         else
@@ -149,19 +148,15 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
         curColor.G = ka * Ia * color.G + kd * Id * color.G + ks * Is * 255;
         curColor.B = ka * Ia * color.B + kd * Id * color.B + ks * Is * 255;
 
-        curColor.R = (curColor.R > 255)? 255 :curColor.R;
-        curColor.G = (curColor.G > 255)? 255 :curColor.G;
-        curColor.B = (curColor.B > 255)? 255 :curColor.B;
-
         if(depth > 0){
             // Reflection Recursive Method
             Color reflection_color = reflection(ray, N, intersect_p, depth-1, Spheres_vector, Triangles_vector, light, eye);
             // Refraction Recursive Method
             Color refraction_color = refraction(ray, N, intersect_p, Nr, depth-1, Spheres_vector, Triangles_vector, light, eye);
             // Accumulated Color
-            curColor.R += reflect * reflection_color.R + refract * refraction_color.R;
-            curColor.G += reflect * reflection_color.G + refract * refraction_color.G;
-            curColor.B += reflect * reflection_color.B + refract * refraction_color.B;
+            curColor.R += 0.2 * reflection_color.R + 0.2 * refraction_color.R;
+            curColor.G += 0.2 * reflection_color.G + 0.2 * refraction_color.G;
+            curColor.B += 0.2 * reflection_color.B + 0.2 * refraction_color.B;
         }
         curColor.R = (curColor.R > 255)? 255 :curColor.R;
         curColor.G = (curColor.G > 255)? 255 :curColor.G;
@@ -334,7 +329,7 @@ int main()
             image.writePixel(x, y, p);
         }
     }
-    image.outputPPM("reds.ppm");
+    image.outputPPM("tracing.ppm");
     return 0;
 }
 

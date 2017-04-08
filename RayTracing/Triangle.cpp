@@ -49,6 +49,7 @@ bool Triangle::intersect(Ray ray, float &t0, float &t1)
     // ray direction
     float t  = Q * v2 / det;
     t0 = t;
+    if(t0 <= 0) return false;
     return true;
 }
 
