@@ -149,6 +149,10 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
         curColor.G = ka * Ia * color.G + kd * Id * color.G + ks * Is * 255;
         curColor.B = ka * Ia * color.B + kd * Id * color.B + ks * Is * 255;
 
+        curColor.R = (curColor.R > 255)? 255 :curColor.R;
+        curColor.G = (curColor.G > 255)? 255 :curColor.G;
+        curColor.B = (curColor.B > 255)? 255 :curColor.B;
+
         if(depth > 0){
             // Reflection Recursive Method
             Color reflection_color = reflection(ray, N, intersect_p, depth-1, Spheres_vector, Triangles_vector, light, eye);
