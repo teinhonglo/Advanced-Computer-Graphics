@@ -170,8 +170,8 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
         curColor.B = 0;
         return curColor;
     }
-
 }
+
 
 
 int main()
