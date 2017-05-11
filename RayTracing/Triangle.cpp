@@ -54,7 +54,7 @@ bool Triangle::intersect(Ray ray, float &t0, float &t1)
 }
 
 vec3 Triangle::getNormal(){
-    return this->normal;
+    return -1 * this->normal;
 }
 
 Material Triangle::getMaterial(){

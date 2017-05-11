@@ -63,7 +63,7 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
     float t1 = 0;
     float curNearestDist = INT_MAX;
     int nearestObj = -1;
-    Color curColor;
+    Color curColor(0,0,0);
 
     // Sphere
     for (int sp_idx = 0;  sp_idx < Spheres_vector.size() ; sp_idx++)
@@ -101,7 +101,7 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
         float ka, kd, ks;
         float reflect, refract;
         float Nr;
-        Color color;
+        Color color(0,0,0);
 
         if(nearestObj < Spheres_vector.size())
         {
@@ -189,6 +189,8 @@ int main()
     vector<Triangle> Triangles_vector;
     Light light;
     Material material;
+    int MAX_SAMPLING = 30;
+    float SAMPLING_RANGE = 1;
 
     // Read information
     while(getline(file, line))
@@ -303,15 +305,49 @@ int main()
     {
         for(int j = 0; j < height; j++)
         {
-            vec3 viewPlanePoint = viewPlaneTopLeftPoint + i*xIncVector + j*yIncVector;
-            vec3 castRay = viewPlanePoint - Eye;
-            Ray ray(Eye, castRay.normalize());
-            Color clr;
-            clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 3);
-            screen[i][j].setColor(clr.R, clr.G, clr.B);
+            float interval;
+            float sampling_x;
+            float sampling_y;
+            float sampling = 0;
+            Color acc_clr(0,0,0);
+            for(int step = 0; step < MAX_SAMPLING; step++){
+                if(rand() % 2 == 1&& (sampling > MAX_SAMPLING / 3.0)) continue;
+                interval = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - SAMPLING_RANGE;
+                sampling_x = i + interval;
+                interval = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - SAMPLING_RANGE;
+                sampling_y = j + interval;
+
+                vec3 viewPlanePoint = viewPlaneTopLeftPoint + sampling_x*xIncVector + sampling_y*yIncVector;
+                vec3 castRay = viewPlanePoint - Eye;
+                Ray ray(Eye, castRay.normalize());
+                Color clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 3);
+
+                acc_clr.setColor(acc_clr.R +  clr.R, acc_clr.G +  clr.G, acc_clr.B +  clr.B);
+                sampling++;
+            }
+            acc_clr.setColor(acc_clr.R / sampling, acc_clr.G / sampling, acc_clr.B / sampling);
+            //cout << acc_clr.R << "," << acc_clr.G << "," << acc_clr.B << endl;
+            float r = acc_clr.R;
+            float g = acc_clr.G;
+            float b = acc_clr.B;
+            screen[i][j].setColor(r, g, b);
         }
     }
-
+    /*
+    for(int i = 0; i < width; i+=2)
+    {
+        for(int j = 0; j < height; j+=2)
+        {
+            float red = (screen[i][j].R + screen[i+1][j].R + screen[i][j+1].R + screen[i+1][j+1].R) / 4;
+            float green = (screen[i][j].G + screen[i+1][j].G + screen[i][j+1].G + screen[i+1][j+1].G) / 4;
+            float blue = (screen[i][j].B + screen[i+1][j].B + screen[i][j+1].B + screen[i+1][j+1].B) / 4;
+            screen[i][j].setColor(red, green, blue);
+            screen[i+1][j].setColor(red, green, blue);
+            screen[i][j+1].setColor(red, green, blue);
+            screen[i+1][j+1].setColor(red, green, blue);
+        }
+    }
+    */
 
     ColorImage image;
     int x, y;
@@ -322,14 +358,13 @@ int main()
     {
         for (x=0; x<width; x++)
         {
-
             p.R = screen[x][y].R;
             p.G = screen[x][y].G;
             p.B = screen[x][y].B;
             image.writePixel(x, y, p);
         }
     }
-    image.outputPPM("tracing.ppm");
+    image.outputPPM("tracing_sampling.ppm");
     return 0;
 }
 
