@@ -17,6 +17,7 @@ public :
     Sphere(float oX, float oY, float oZ, float radius);
     Sphere(float oX, float oY, float oZ, float radius, Material m);
     void setCenter(float oX, float oY, float oZ);
+    void setCenter(vec3 center);
     vec3 getCenter();
     void setRadius(float r);
     vec3 getRadius();

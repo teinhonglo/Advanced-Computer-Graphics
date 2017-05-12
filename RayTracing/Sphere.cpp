@@ -20,6 +20,11 @@ void Sphere::setCenter(float oX, float oY, float oZ)
     this->center.set(oX, oY, oZ);
 }
 
+void Sphere::setCenter(vec3 center)
+{
+    this->center = center;
+}
+
 vec3 Sphere::getCenter()
 {
     return this->center;

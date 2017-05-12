@@ -154,9 +154,9 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
             // Refraction Recursive Method
             Color refraction_color = refraction(ray, N, intersect_p, Nr, depth-1, Spheres_vector, Triangles_vector, light, eye);
             // Accumulated Color
-            curColor.R += 0.2 * reflection_color.R + 0.2 * refraction_color.R;
-            curColor.G += 0.2 * reflection_color.G + 0.2 * refraction_color.G;
-            curColor.B += 0.2 * reflection_color.B + 0.2 * refraction_color.B;
+            curColor.R = 0.6 * curColor.R + 0.2 * reflection_color.R + 0.2 * refraction_color.R;
+            curColor.G = 0.6 * curColor.G + 0.2 * reflection_color.G + 0.2 * refraction_color.G;
+            curColor.B = 0.6 * curColor.B + 0.2 * reflection_color.B + 0.2 * refraction_color.B;
         }
         curColor.R = (curColor.R > 255)? 255 :curColor.R;
         curColor.G = (curColor.G > 255)? 255 :curColor.G;
@@ -172,6 +172,48 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
     }
 }
 
+vector <vector< Color > > render(int width, int height, vec3 viewPlaneTopLeftPoint,Light light, vec3 Eye,
+                                          int MAX_SAMPLING, float SAMPLING_RANGE, vec3 xIncVector, vec3 yIncVector,
+                                          vector<Sphere> Spheres_vector, vector<Triangle> Triangles_vector,
+                                          vector<vector <Color> > screen, float proportion)
+{
+    // for every pixel
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            float interval;
+            float sampling_x;
+            float sampling_y;
+            float sampling = 0;
+            Color acc_clr(0,0,0);
+            for(int step = 0; step < MAX_SAMPLING; step++){
+                if(rand() % 2 == 1 && (sampling > MAX_SAMPLING / 4.0)) continue;
+                interval = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - SAMPLING_RANGE;
+                sampling_x = i + interval;
+                interval = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - SAMPLING_RANGE;
+                sampling_y = j + interval;
+
+                vec3 viewPlanePoint = viewPlaneTopLeftPoint + sampling_x*xIncVector + sampling_y*yIncVector;
+                vec3 castRay = viewPlanePoint - Eye;
+                Ray ray(Eye, castRay.normalize());
+                Color clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 3);
+
+                acc_clr.setColor(acc_clr.R +  clr.R, acc_clr.G +  clr.G, acc_clr.B +  clr.B);
+                sampling++;
+
+            }
+            //cout << "Sampling:"<< sampling << ", i:" << i << ",j:" << j << endl;
+            acc_clr.setColor(acc_clr.R / sampling, acc_clr.G / sampling, acc_clr.B / sampling);
+            //cout << acc_clr.R << "," << acc_clr.G << "," << acc_clr.B << endl;
+            float r = (1 - proportion) * screen[i][j].R + proportion * acc_clr.R;
+            float g = (1 - proportion) * screen[i][j].G + proportion * acc_clr.G;
+            float b = (1 - proportion) * screen[i][j].B + proportion * acc_clr.B;
+            screen[i][j].setColor(r, g, b);
+        }
+    }
+    return screen;
+}
 
 
 int main()
@@ -191,7 +233,7 @@ int main()
     Material material;
     int MAX_SAMPLING = 30;
     float SAMPLING_RANGE = 1;
-
+    float MOTION_INTERVAL = 0.3;
     // Read information
     while(getline(file, line))
     {
@@ -297,42 +339,24 @@ int main()
     vec3 viewPlaneTopLeftPoint = lookAtPoint + halfHeight * V + halfWidth * U;
     vec3 xIncVector = -(U * 2 * halfWidth) / width;
     vec3 yIncVector = -(V * 2 * halfHeight) / height;
-    float t0, t1;
-    float curNearestDist;
-    int nearestObj;
 
-    for(int i = 0; i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            float interval;
-            float sampling_x;
-            float sampling_y;
-            float sampling = 0;
-            Color acc_clr(0,0,0);
-            for(int step = 0; step < MAX_SAMPLING; step++){
-                if(rand() % 2 == 1&& (sampling > MAX_SAMPLING / 3.0)) continue;
-                interval = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - SAMPLING_RANGE;
-                sampling_x = i + interval;
-                interval = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - SAMPLING_RANGE;
-                sampling_y = j + interval;
+    screen = render(width, height, viewPlaneTopLeftPoint, light, Eye, MAX_SAMPLING, SAMPLING_RANGE, xIncVector, yIncVector,
+                    Spheres_vector, Triangles_vector, screen, 1);
+    vec3 origin_center = Spheres_vector[0].getCenter();
+    /*
+    // motion blur
+    for (int d = 1; d < 3; d++){
+        Spheres_vector[0].setCenter(origin_center + -d * MOTION_INTERVAL * xIncVector);
+        screen = render(width, height, viewPlaneTopLeftPoint, light, Eye, MAX_SAMPLING, SAMPLING_RANGE, xIncVector, yIncVector,
+                    Spheres_vector, Triangles_vector, screen, 0.2);
 
-                vec3 viewPlanePoint = viewPlaneTopLeftPoint + sampling_x*xIncVector + sampling_y*yIncVector;
-                vec3 castRay = viewPlanePoint - Eye;
-                Ray ray(Eye, castRay.normalize());
-                Color clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 3);
+        Spheres_vector[0].setCenter(origin_center + d * MOTION_INTERVAL * xIncVector);
+        screen = render(width, height, viewPlaneTopLeftPoint, light, Eye, MAX_SAMPLING, SAMPLING_RANGE, xIncVector, yIncVector,
+                    Spheres_vector, Triangles_vector, screen, 0.2);
 
-                acc_clr.setColor(acc_clr.R +  clr.R, acc_clr.G +  clr.G, acc_clr.B +  clr.B);
-                sampling++;
-            }
-            acc_clr.setColor(acc_clr.R / sampling, acc_clr.G / sampling, acc_clr.B / sampling);
-            //cout << acc_clr.R << "," << acc_clr.G << "," << acc_clr.B << endl;
-            float r = acc_clr.R;
-            float g = acc_clr.G;
-            float b = acc_clr.B;
-            screen[i][j].setColor(r, g, b);
-        }
     }
+    */
+    // merge screen
     /*
     for(int i = 0; i < width; i+=2)
     {

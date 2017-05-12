@@ -1,6 +1,9 @@
 #include "Material.h"
 
 Color::Color(){
+    this->R = 0;
+    this->G = 0;
+    this->B = 0;
 }
 
 Color::Color(float r, float g, float b){
