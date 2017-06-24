@@ -18,6 +18,11 @@ void Color::setColor(float r, float g, float b){
 	this->B = b;
 }
 
+void Scene::setColor(float r, float g, float b){
+	this->clr.setColor(r, g, b);
+}
+
+
 void Material::setMaterial(float r, float g, float b, float Ka, float Kd, float Ks, float exp, float Reflect, float Refract, float Nr)
 {
     this->color.setColor(r * 255, g * 255, b * 255);

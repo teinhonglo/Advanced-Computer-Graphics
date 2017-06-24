@@ -3,6 +3,9 @@
 #include "Material.h"
 #include "Ray.h"
 #include <math.h>       /* pow */
+#include <limits.h>
+#include <stdio.h>
+#include<stdlib.h>
 #ifndef SPHERE_H
 #define SPHERE_H
 

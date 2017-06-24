@@ -12,6 +12,13 @@ struct Color{
 	void setColor(float r, float g, float b);
 };
 
+struct Scene{
+	bool isInterset = false;
+	float distance = -1;
+	Color clr;
+	void setColor(float r, float g, float b);
+};
+
 struct Material
 {
 	Color color;

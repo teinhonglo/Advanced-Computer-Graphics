@@ -1,4 +1,5 @@
 #include "Sphere.h"
+#define DBL_EPSILON     2.2204460492503131e-016
 
 Sphere::Sphere(float oX, float oY, float oZ, float radius)
 {
@@ -60,7 +61,16 @@ bool Sphere::intersect(Ray ray, float &t0, float &t1)
             if(t0 > t1){
                 t0 = t1;
             }
+
+            int judge = t0 * 100;
+            float _t0 = judge / 100.0;
+            if(_t0 > 0 - DBL_EPSILON&& _t0 < 0 + DBL_EPSILON){
+                std::cout << t0 <<"," << _t0 << "\n";
+                return false;
+            }
+
         }
+
         return true;
     }else{
         return false;
