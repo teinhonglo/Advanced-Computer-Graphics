@@ -189,15 +189,16 @@ vector <vector< Color > > render(int width, int height, vec3 viewPlaneTopLeftPoi
             Color acc_clr(0,0,0);
             for(int step = 0; step < MAX_SAMPLING; step++){
                 if(rand() % 2 == 1 && (sampling > MAX_SAMPLING / 4.0)) continue;
-                interval = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - SAMPLING_RANGE;
-                sampling_x = i + interval;
-                interval = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - SAMPLING_RANGE;
-                sampling_y = j + interval;
+                //interval = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - SAMPLING_RANGE;
+                sampling_x = i;// + interval;
+                //interval = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) - SAMPLING_RANGE;
+                sampling_y = j;// + interval;
 
                 vec3 viewPlanePoint = viewPlaneTopLeftPoint + sampling_x*xIncVector + sampling_y*yIncVector;
                 vec3 castRay = viewPlanePoint - Eye;
                 Ray ray(Eye, castRay.normalize());
-                Color clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 3);
+                cout << i<<","<<j<< endl;
+                Color clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 1);
 
                 acc_clr.setColor(acc_clr.R +  clr.R, acc_clr.G +  clr.G, acc_clr.B +  clr.B);
                 sampling++;
@@ -218,7 +219,7 @@ vector <vector< Color > > render(int width, int height, vec3 viewPlaneTopLeftPoi
 
 int main()
 {
-    ifstream file( "hw2_input.txt");
+    ifstream file( "dragon.txt");
     char * pattern = " ";
     string line;
     vector<string> info;
@@ -231,7 +232,7 @@ int main()
     vector<Triangle> Triangles_vector;
     Light light;
     Material material;
-    int MAX_SAMPLING = 30;
+    int MAX_SAMPLING = 1;
     float SAMPLING_RANGE = 1;
     float MOTION_INTERVAL = 0.3;
     // Read information
