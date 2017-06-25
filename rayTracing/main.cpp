@@ -164,7 +164,9 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
             //cout << "First:" << nearestObj << " ";
             distance = curNearestDist;
             isInterset = true;
-        }else{
+        }
+        else
+        {
             //cout << depth << ","<< nearestObj<< " ";
         }
         if(depth > 0)
@@ -368,11 +370,29 @@ int main()
 
     int plane_width = 6;
     int length = 1;
-/*
-    int copy_length = Triangles_vector.size();
+    /*
+        int copy_length = Triangles_vector.size();
 
-    for(int inv = 0; inv < 2; inv++)
-    {
+        for(int inv = 0; inv < 2; inv++)
+        {
+            for(int i = 1; i < plane_width / 2; i++)
+            {
+                int inv_clr = 1;
+                for(int t = 0; t < copy_length; t++)
+                {
+                    Triangle tri = Triangles_vector[t];
+                    Material m = tri.getMaterial();
+                    if(inv_clr == 1) m.color.setColor(255, 255, 255);
+                    else m.color.setColor(0,0,0);
+                    tri.setTraingle(i * (length) * xIncVector, m);
+                    Triangles_vector.push_back(tri);
+                }
+                inv_clr *= -1;
+            }
+            length *= -1;
+        }
+        copy_length = Triangles_vector.size();
+        length = 1;
         for(int i = 1; i < plane_width / 2; i++)
         {
             int inv_clr = 1;
@@ -382,53 +402,41 @@ int main()
                 Material m = tri.getMaterial();
                 if(inv_clr == 1) m.color.setColor(255, 255, 255);
                 else m.color.setColor(0,0,0);
-                tri.setTraingle(i * (length) * xIncVector, m);
+                tri.setTraingle(i * (length) * (lookAtPoint - Eye).normalize(), m);
                 Triangles_vector.push_back(tri);
             }
             inv_clr *= -1;
         }
-        length *= -1;
-    }
-    copy_length = Triangles_vector.size();
-    length = 1;
-    for(int i = 1; i < plane_width / 2; i++)
-    {
-        int inv_clr = 1;
-        for(int t = 0; t < copy_length; t++)
-        {
-            Triangle tri = Triangles_vector[t];
-            Material m = tri.getMaterial();
-            if(inv_clr == 1) m.color.setColor(255, 255, 255);
-            else m.color.setColor(0,0,0);
-            tri.setTraingle(i * (length) * (lookAtPoint - Eye).normalize(), m);
-            Triangles_vector.push_back(tri);
-        }
-        inv_clr *= -1;
-    }
-    cout << Triangles_vector.size() << endl;
-*/
+        cout << Triangles_vector.size() << endl;
+    */
     render(width, height, viewPlaneTopLeftPoint, light, Eye, MAX_SAMPLING, SAMPLING_RANGE, xIncVector, yIncVector,
-                    Spheres_vector, Triangles_vector, screen, 1);
+           Spheres_vector, Triangles_vector, screen, 1);
 
     float dof_dis = 6;
     float dof_range = 0.5;
     float blur_range = 5;
 
     cout << "Depth of Fields";
-    for(int i = 0; i < width; i++){
-        for(int j = 0; j < height; j++){
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
             if(screen[i][j].distance <= dof_dis + dof_range&& screen[i][j].distance >= dof_dis - dof_range)  continue;
-            else{
+            else
+            {
                 int num_of_neighbors = 1;
                 float R = screen[i][j].clr.R;
                 float G = screen[i][j].clr.G;
                 float B = screen[i][j].clr.B;
                 int w_bd = (i + blur_range > width)? width: i+blur_range;
                 int h_bd = (j + blur_range > height)? height: j+blur_range;
-                for(int _i = i; _i < w_bd; _i++){
-                    for(int _j = j; _j < h_bd; _j++){
+                for(int _i = i; _i < w_bd; _i++)
+                {
+                    for(int _j = j; _j < h_bd; _j++)
+                    {
                         if(screen[_i][_j].distance <= dof_dis + dof_range&& screen[_i][_j].distance >= dof_dis - dof_range) continue;
-                        else{
+                        else
+                        {
                             R += screen[_i][_j].clr.R;
                             G += screen[_i][_j].clr.G;
                             B += screen[_i][_j].clr.B;

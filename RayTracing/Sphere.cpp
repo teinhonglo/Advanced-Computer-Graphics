@@ -49,22 +49,28 @@ bool Sphere::intersect(Ray ray, float &t0, float &t1)
     float t = (this->center * dir - ori * dir ) / (dir * dir);
     vec3 nearest_point = ray.getPoint(t);
     float distance = (nearest_point - this->center).length();
-    if(distance <= this->radius){
-        if(distance == this->radius){
+    if(distance <= this->radius)
+    {
+        if(distance == this->radius)
+        {
             t0 = (nearest_point - ori).length();
-        }else{
+        }
+        else
+        {
             float inn_dist = sqrt(pow(this->radius, 2) - pow(distance, 2));
             vec3 fst_p = nearest_point - dir * inn_dist;
             vec3 snd_p = nearest_point + dir * inn_dist;
             t0 = (fst_p - ori).length();
             t1 = (snd_p - ori).length();
-            if(t0 > t1){
+            if(t0 > t1)
+            {
                 t0 = t1;
             }
 
             int judge = t0 * 100;
             float _t0 = judge / 100.0;
-            if(_t0 > 0 - DBL_EPSILON&& _t0 < 0 + DBL_EPSILON){
+            if(_t0 > 0 - DBL_EPSILON&& _t0 < 0 + DBL_EPSILON)
+            {
                 //std::cout << t0 <<"," << _t0 << "\n";
                 return false;
             }
@@ -72,12 +78,15 @@ bool Sphere::intersect(Ray ray, float &t0, float &t1)
         }
 
         return true;
-    }else{
+    }
+    else
+    {
         return false;
     }
 }
 
-Material Sphere::getMaterial(){
+Material Sphere::getMaterial()
+{
     return this->material;
 }
 

@@ -63,17 +63,17 @@
 	<stdio.h>
 	<stdlib.h>
 
-1498361365 source:e:\lou\advanced-computer-graphics\raytracing\algebra3\algebra3.cpp
+1498390118 source:e:\lou\advanced-computer-graphics\raytracing\algebra3\algebra3.cpp
 	<math.h>
 	"algebra3.h"
 	<ctype.h>
 
-1491710805 e:\lou\advanced-computer-graphics\raytracing\algebra3\algebra3.h
+1498390119 e:\lou\advanced-computer-graphics\raytracing\algebra3\algebra3.h
 	<math.h>
 	<stdio.h>
 	<stdlib.h>
 
-1498364777 source:e:\lou\advanced-computer-graphics\raytracing\main.cpp
+1498390119 source:e:\lou\advanced-computer-graphics\raytracing\main.cpp
 	<iostream>
 	<fstream>
 	<vector>
@@ -116,13 +116,13 @@
 1491710805 source:e:\lou\advanced-computer-graphics\raytracing\output.cpp
 	"output.h"
 
-1491710805 source:e:\lou\advanced-computer-graphics\raytracing\ray.cpp
+1498390119 source:e:\lou\advanced-computer-graphics\raytracing\ray.cpp
 	"Ray.h"
 
-1498359057 source:e:\lou\advanced-computer-graphics\raytracing\sphere.cpp
+1498390119 source:e:\lou\advanced-computer-graphics\raytracing\sphere.cpp
 	"Sphere.h"
 
-1498361532 source:e:\lou\advanced-computer-graphics\raytracing\triangle.cpp
+1498390119 source:e:\lou\advanced-computer-graphics\raytracing\triangle.cpp
 	"Triangle.h"
 
 1491710805 source:e:\lou\advanced-computer-graphics\raytracing\light.cpp
@@ -132,10 +132,10 @@
 	<iostream>
 	"algebra3/algebra3.h"
 
-1498305124 source:e:\lou\advanced-computer-graphics\raytracing\material.cpp
+1498390119 source:e:\lou\advanced-computer-graphics\raytracing\material.cpp
 	"Material.h"
 
-1498305099 e:\lou\advanced-computer-graphics\raytracing\material.h
+1498390118 e:\lou\advanced-computer-graphics\raytracing\material.h
 	<iostream>
 	"algebra3/algebra3.h"
 

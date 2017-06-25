@@ -53,14 +53,16 @@ bool Triangle::intersect(Ray ray, float &t0, float &t1)
     return true;
 }
 
-void Triangle::setTraingle(vec3 dir, Material m){
+void Triangle::setTraingle(vec3 dir, Material m)
+{
     this->position += dir;
     this->v1 += dir;
     this->v2 += dir;
     this->material = m;
 }
 
-void Triangle::getPoints(){
+void Triangle::getPoints()
+{
     std::cout << "T ";
     this->position.printCoor();
     this->v1.printCoor();
@@ -68,10 +70,12 @@ void Triangle::getPoints(){
     std::cout << "\n";
 }
 
-vec3 Triangle::getNormal(){
+vec3 Triangle::getNormal()
+{
     return -1 * this->normal;
 }
 
-Material Triangle::getMaterial(){
+Material Triangle::getMaterial()
+{
     return this->material;
 }
