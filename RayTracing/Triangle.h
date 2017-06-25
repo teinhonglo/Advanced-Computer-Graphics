@@ -26,6 +26,8 @@ public:
              float x3, float y3, float z3, Material m);
 
     bool intersect(Ray ray, float &t0, float &t1);
+    void setTraingle(vec3 dir, Material m);
+    void getPoints();
     vec3 getNormal();
     Material getMaterial();
 };

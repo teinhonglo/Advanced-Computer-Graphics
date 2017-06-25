@@ -245,7 +245,7 @@ vector <vector< Scene > > render(int width, int height, vec3 viewPlaneTopLeftPoi
 
 int main()
 {
-    ifstream file( "hw2_input.txt");
+    ifstream file( "input.txt");
     char * pattern = " ";
     string line;
     vector<string> info;
@@ -366,6 +366,47 @@ int main()
     vec3 xIncVector = -(U * 2 * halfWidth) / width;
     vec3 yIncVector = -(V * 2 * halfHeight) / height;
 
+    int plane_width = 6;
+    int length = 1;
+/*
+    int copy_length = Triangles_vector.size();
+
+    for(int inv = 0; inv < 2; inv++)
+    {
+        for(int i = 1; i < plane_width / 2; i++)
+        {
+            int inv_clr = 1;
+            for(int t = 0; t < copy_length; t++)
+            {
+                Triangle tri = Triangles_vector[t];
+                Material m = tri.getMaterial();
+                if(inv_clr == 1) m.color.setColor(255, 255, 255);
+                else m.color.setColor(0,0,0);
+                tri.setTraingle(i * (length) * xIncVector, m);
+                Triangles_vector.push_back(tri);
+            }
+            inv_clr *= -1;
+        }
+        length *= -1;
+    }
+    copy_length = Triangles_vector.size();
+    length = 1;
+    for(int i = 1; i < plane_width / 2; i++)
+    {
+        int inv_clr = 1;
+        for(int t = 0; t < copy_length; t++)
+        {
+            Triangle tri = Triangles_vector[t];
+            Material m = tri.getMaterial();
+            if(inv_clr == 1) m.color.setColor(255, 255, 255);
+            else m.color.setColor(0,0,0);
+            tri.setTraingle(i * (length) * (lookAtPoint - Eye).normalize(), m);
+            Triangles_vector.push_back(tri);
+        }
+        inv_clr *= -1;
+    }
+    cout << Triangles_vector.size() << endl;
+*/
     render(width, height, viewPlaneTopLeftPoint, light, Eye, MAX_SAMPLING, SAMPLING_RANGE, xIncVector, yIncVector,
                     Spheres_vector, Triangles_vector, screen, 1);
 

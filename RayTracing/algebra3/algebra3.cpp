@@ -318,7 +318,7 @@ void  vec3::print( FILE *file, char *name )  // print vector to a file
 
 void vec3::printCoor() // print matrix to a file
 {
-  printf("<x:%f, y:%f, z:%f>\n", n[VX], n[VY], n[VZ] );
+  printf("%f %f %f> ", n[VX], n[VY], n[VZ] );
 }
 
 float vec3::getX() // print matrix to a file

@@ -63,7 +63,7 @@
 	<stdio.h>
 	<stdlib.h>
 
-1491710805 source:e:\lou\advanced-computer-graphics\raytracing\algebra3\algebra3.cpp
+1498361365 source:e:\lou\advanced-computer-graphics\raytracing\algebra3\algebra3.cpp
 	<math.h>
 	"algebra3.h"
 	<ctype.h>
@@ -73,7 +73,7 @@
 	<stdio.h>
 	<stdlib.h>
 
-1498359049 source:e:\lou\advanced-computer-graphics\raytracing\main.cpp
+1498364777 source:e:\lou\advanced-computer-graphics\raytracing\main.cpp
 	<iostream>
 	<fstream>
 	<vector>
@@ -107,7 +107,7 @@
 	<assert.h>
 	<fstream>
 
-1491710805 e:\lou\advanced-computer-graphics\raytracing\triangle.h
+1498361419 e:\lou\advanced-computer-graphics\raytracing\triangle.h
 	<iostream>
 	"algebra3/algebra3.h"
 	"Ray.h"
@@ -122,7 +122,7 @@
 1498359057 source:e:\lou\advanced-computer-graphics\raytracing\sphere.cpp
 	"Sphere.h"
 
-1491714206 source:e:\lou\advanced-computer-graphics\raytracing\triangle.cpp
+1498361532 source:e:\lou\advanced-computer-graphics\raytracing\triangle.cpp
 	"Triangle.h"
 
 1491710805 source:e:\lou\advanced-computer-graphics\raytracing\light.cpp
