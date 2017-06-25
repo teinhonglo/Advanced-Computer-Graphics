@@ -209,7 +209,7 @@ vector <vector< Scene > > render(int width, int height, vec3 viewPlaneTopLeftPoi
             Color acc_clr(0,0,0);
             float distance = -1;
             bool isInterset = false;
-
+            int depth = MAX_DEPTH;
             for(int step = 0; step < MAX_SAMPLING; step++)
             {
                 //if(rand() % 2 == 1 && (sampling > MAX_SAMPLING / 4.0)) continue;
@@ -222,7 +222,7 @@ vector <vector< Scene > > render(int width, int height, vec3 viewPlaneTopLeftPoi
                 vec3 castRay = viewPlanePoint - Eye;
                 Ray ray(Eye, castRay.normalize());
 
-                Color clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, 1, distance, isInterset);
+                Color clr = tracing(ray, Spheres_vector, Triangles_vector, light, Eye, depth, distance, isInterset);
                 //cout << i<<","<<j<< ", distance:"<< distance<<", intersect:"<< isInterset<<endl;
                 acc_clr.setColor(acc_clr.R +  clr.R, acc_clr.G +  clr.G, acc_clr.B +  clr.B);
                 sampling++;
@@ -245,7 +245,7 @@ vector <vector< Scene > > render(int width, int height, vec3 viewPlaneTopLeftPoi
 
 int main()
 {
-    ifstream file( "input.txt");
+    ifstream file( "hw2_input.txt");
     char * pattern = " ";
     string line;
     vector<string> info;
@@ -376,7 +376,7 @@ int main()
     cout << "Depth of Fields";
     for(int i = 0; i < width; i++){
         for(int j = 0; j < height; j++){
-            if(screen[i][j].distance <= dof_dis + dof_range&& screen[i][j].distance >= dof_dis - dof_range) continue;
+            if(screen[i][j].distance <= dof_dis + dof_range&& screen[i][j].distance >= dof_dis - dof_range)  continue;
             else{
                 int num_of_neighbors = 1;
                 float R = screen[i][j].clr.R;

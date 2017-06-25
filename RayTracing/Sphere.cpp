@@ -65,7 +65,7 @@ bool Sphere::intersect(Ray ray, float &t0, float &t1)
             int judge = t0 * 100;
             float _t0 = judge / 100.0;
             if(_t0 > 0 - DBL_EPSILON&& _t0 < 0 + DBL_EPSILON){
-                std::cout << t0 <<"," << _t0 << "\n";
+                //std::cout << t0 <<"," << _t0 << "\n";
                 return false;
             }
 
