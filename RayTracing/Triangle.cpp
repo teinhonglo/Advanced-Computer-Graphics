@@ -19,6 +19,7 @@ Triangle::Triangle(float x1, float y1, float z1,
     position.set(x1, y1, z1);
     v1.set(x2, y2, z2);
     v2.set(x3, y3, z3);
+    this->normal = (v1 - this->position) ^ (v2 - this->position); // cross product
     this->isHit = false;
     this->material = m;
 }
@@ -72,7 +73,7 @@ void Triangle::getPoints()
 
 vec3 Triangle::getNormal()
 {
-    return -1 * this->normal;
+    return this->normal;
 }
 
 Material Triangle::getMaterial()

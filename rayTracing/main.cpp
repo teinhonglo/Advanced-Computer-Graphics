@@ -107,7 +107,7 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
         vec3 N;                                                     // Normal
         vec3 L = (light.getPostion() - intersect_p).normalize();    // Light - intersect
         vec3 V = (eye - intersect_p).normalize();                   // View - intersect
-        vec3 H = (L + V).normalize();                               // L + V
+        vec3 H = (L + V) / 2;                               // L + V
         float exp;
         float li = 1.0;                                             // Light intensity
         float ka, kd, ks;
@@ -153,9 +153,10 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
             //cout << "Triangle" << endl;
         }
         // Phong Reflection model
-        float Id = ((N * L) > 0) ?  li * (N * L) : 0;
-        float Is = ((N * H) > 0) ?  li * pow((H * N), exp) : 0;
+        float Id = ((N * L) > 0) ?  li * (N * L) : li * (-1 * N * L);
+        float Is = ((N * H) > 0) ?  li * pow((N * H), exp) : li * pow((-1 * N * H), exp);
         float Ia = 1;
+        //cout << color.R << ", " << color.G << ", " << color.B << endl;
         curColor.R = ka * Ia * color.R + kd * Id * color.R + ks * Is * 255;
         curColor.G = ka * Ia * color.G + kd * Id * color.G + ks * Is * 255;
         curColor.B = ka * Ia * color.B + kd * Id * color.B + ks * Is * 255;
@@ -190,6 +191,7 @@ Color tracing(Ray ray, vector<Sphere> Spheres_vector, vector<Triangle> Triangles
         curColor.R = 0;
         curColor.G = 0;
         curColor.B = 0;
+        isInterset = false;
         return curColor;
     }
 }
@@ -247,7 +249,7 @@ vector <vector< Scene > > render(int width, int height, vec3 viewPlaneTopLeftPoi
 
 int main()
 {
-    ifstream file( "input.txt");
+    ifstream file( "hw2_input.txt");
     char * pattern = " ";
     string line;
     vector<string> info;
@@ -415,7 +417,7 @@ int main()
     float dof_dis = 6;
     float dof_range = 0.5;
     float blur_range = 5;
-
+    /*
     cout << "Depth of Fields";
     for(int i = 0; i < width; i++)
     {
@@ -448,7 +450,7 @@ int main()
             }
         }
     }
-    /*
+
     // motion blur
     for (int d = 1; d < 3; d++){
         Spheres_vector[0].setCenter(origin_center + -d * MOTION_INTERVAL * xIncVector);
