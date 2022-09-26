@@ -262,7 +262,7 @@ int main()
     vector<Triangle> Triangles_vector;
     Light light;
     Material material;
-    # material.setMaterial(r, g, b, Ka, Kd, Ks, exp, Reflect, Refract, Nr);
+    // material.setMaterial(r, g, b, Ka, Kd, Ks, exp, Reflect, Refract, Nr);
     material.setMaterial(0.5, 0.5, 1.0, 0.1, 0.9, 0.3, 2.0, 0.2, 0.2, 1.6);
     int MAX_SAMPLING = 1;
     float SAMPLING_RANGE = 1;
